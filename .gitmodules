@@ -1,0 +1,3 @@
+[submodule "mobile/adctl"]
+	path = mobile/adctl
+	url = git@github.com:kafeg/adctl.git

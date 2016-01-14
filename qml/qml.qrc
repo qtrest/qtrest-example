@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>CouponsList.qml</file>
+        <file>CouponsListDelegate.qml</file>
+        <file>includes/Utils.qml</file>
+    </qresource>
+</RCC>
