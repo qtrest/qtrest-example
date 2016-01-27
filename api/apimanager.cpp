@@ -80,7 +80,7 @@ QJsonDocument APIManager::getJSONDocument(QByteArray bytes)
     //qDebug() << str.length();
 }
 
-QNetworkReply *APIManager::getCoupon(QString sort)
+QNetworkReply *APIManager::getCoupon(QString sort, int perPage)
 {
     //URL and GET parameters
     QUrl url = QUrl(_baseUrl+"/v1/coupon");
@@ -89,6 +89,8 @@ QNetworkReply *APIManager::getCoupon(QString sort)
     if (!sort.isEmpty()) {
         query.addQueryItem("sort", sort);
     }
+
+    query.addQueryItem("per-page", QString::number(perPage));
 
     url.setQuery(query.query());
 

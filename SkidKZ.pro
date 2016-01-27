@@ -26,10 +26,13 @@ lupdate_only {
     $$PWD/qml/includes/*.qml \
     $$PWD/qml/models/*.qml
 }
-TRANSLATIONS += i18n/skidkz_ru.ts
+TRANSLATIONS += assets/i18n/skidkz_ru.ts
 
 # Default rules for deployment.
 include(deployment.pri)
+
+#Font Awesome
+include(3rd/awesome/QtAwesome/QtAwesome.pri)
 
 #AdCtl: Google Analytics, AdMob, StartAD.mobi
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/mobile/android
@@ -45,4 +48,8 @@ DISTFILES += \
     mobile/android/res/values/libs.xml \
     mobile/android/build.gradle \
     mobile/android/gradle/wrapper/gradle-wrapper.properties \
-    mobile/android/gradlew.bat
+    mobile/android/gradlew.bat \
+    qml/controls/Button.qml \
+    qml/controls/Loader.qml \
+    qml/controls/Text.qml \
+    qml/controls/Variables.qml

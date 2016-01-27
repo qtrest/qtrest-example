@@ -4,6 +4,7 @@ import QtQuick.Dialogs 1.2
 import ru.forsk.coupons 1.0
 import "includes" as I
 import ru.forsk.adctl 1.0
+import QtQuick.Layouts 1.2
 
 ApplicationWindow {
     id: root
@@ -11,6 +12,15 @@ ApplicationWindow {
     width: 480
     height: 800
     title: qsTr("Skid.KZ")
+
+    toolBar: ToolBar {
+        RowLayout {
+            anchors.fill: parent
+            ToolButton {
+                iconSource: awesome.iconLink( "beer", "xxhdpi" )
+            }
+        }
+    }
 
     AdCtl {
         id: adCtl
@@ -29,8 +39,8 @@ ApplicationWindow {
 
         onAdMobBannerShowed: {
             adMobBannerPosition = Qt.point((root.width - adCtl.adMobBannerWidth) * 0.5,
-                                           (root.height - adCtl.adMobBannerHeight * 1.5))
-            adCtl.hideAdMobBanner()
+                                           (root.height - adCtl.adMobBannerHeight))
+            adCtl.showAdMobBanner()
         }
 
         //When all variables are setted, we can to initialize our code
@@ -43,6 +53,8 @@ ApplicationWindow {
 
     CouponModel {
         id: coupons;
+        sort: "-id"
+        perPage: 50
         Component.onCompleted: update()
     }
 
