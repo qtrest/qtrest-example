@@ -69,6 +69,19 @@ Item {
             horizontalAlignment: Text.AlignHCenter
         }
 
+        Text {
+            id: description
+            text: shortDescription
+            font.bold: true
+            font.pointSize: 10
+            color: "white"
+            wrapMode: Text.WordWrap
+            width: parent.width
+            clip: true
+            maximumLineCount: 4
+            horizontalAlignment: Text.AlignHCenter
+        }
+
         Rectangle {
             width: parent.width
             height: 1

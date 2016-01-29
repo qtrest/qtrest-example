@@ -4,30 +4,65 @@
 #include <QJsonObject>
 #include <QNetworkReply>
 
-CouponModel::CouponModel(QObject *parent) : QAbstractListModel(parent), m_sort("-id"), m_perPage(20)
+CouponModel::CouponModel(QObject *parent) : QAbstractListModel(parent), m_sort("-id"), m_perPage(20), currentReply(NULL)
 {
-    connect(&couponapi,SIGNAL(getCouponFinished(QJsonDocument)), this, SLOT(updateFinished(QJsonDocument)));
+    setLoadingStatus(LoadingStatus::Idle);
+    connect(&couponapi,SIGNAL(getCouponFinished(QJsonDocument, QNetworkReply *)), this, SLOT(updateFinished(QJsonDocument, QNetworkReply *)));
 }
 
 void CouponModel::update()
 {
+    if (loadingStatus() != LoadingStatus::Idle) {
+        return;
+    }
+
+    qDebug() << "start full";
+    setLoadingStatus(LoadingStatus::FullReloadProcessing);
+    setCurrentPage(1);
     currentReply = couponapi.getCoupon(sort(), perPage());
 }
 
-void CouponModel::updateFinished(QJsonDocument json)
+void CouponModel::more()
+{
+    if (loadingStatus() != LoadingStatus::Idle) {
+        return;
+    }
+
+    qDebug() << "start more";
+    setLoadingStatus(LoadingStatus::LoadMoreProcessing);
+    setCurrentPage(currentPage()+1);
+    currentReply = couponapi.getCoupon(sort(), perPage(), currentPage());
+}
+
+void CouponModel::updateFinished(QJsonDocument json, QNetworkReply *reply)
 {
     qDebug() << "updateFinished";
 
-//    if (!reply || ) {
-//        qDebug() << "reply is null or ";
-//        return;
-//    }
+    //TODO check is reply for me
 
-    m_items.clear();
+    //update headers data
+    this->setCurrentPage(reply->rawHeader("X-Pagination-Current-Page").toInt());
+    this->setTotalCount(reply->rawHeader("X-Pagination-Total-Count").toInt());
+    this->setPageCount(reply->rawHeader("X-Pagination-Page-Count").toInt());
+    reply->deleteLater();
 
     QJsonArray jsonArray = json.array();
 
-    beginInsertRows(QModelIndex(), rowCount(), jsonArray.count());
+    //prepare vars
+    int insertFrom = rowCount();
+    int insertCount = rowCount()+jsonArray.count()-1;
+
+    if (this->loadingStatus() == LoadingStatus::FullReloadProcessing) {
+        int removeCount = rowCount()-1;
+        if (removeCount < 0) { removeCount = 0; }
+        beginResetModel();
+        m_items.clear();
+        insertFrom = rowCount();
+        insertCount = jsonArray.count()-1;
+        endResetModel();
+    }
+
+    beginInsertRows(this->index(rowCount(), 0), insertFrom, insertCount);
 
     //http://stackoverflow.com/questions/19822211/qt-parsing-json-using-qjsondocument-qjsonobject-qjsonarray
     foreach (const QJsonValue & value, jsonArray) {
@@ -50,22 +85,29 @@ void CouponModel::updateFinished(QJsonDocument json)
         item.cityId = obj["cityId"].toInt();
         item.cityName = obj["cityName"].toString();
 
+        item.shortDescription = obj["shortDescription"].toString();
+
         m_items.append(item);
     }
 
     endInsertRows();
 
-    emit countChanged();
+    qDebug() << m_items.count() << rowCount() << jsonArray.count() << jsonArray.size() << insertFrom << insertCount;
 
-    qDebug() << rowCount() << jsonArray.count();
+    setLoadingStatus(LoadingStatus::Idle);
+
+    emit countChanged();
 }
 
 QVariant CouponModel::data(const QModelIndex &index, int role) const
 {
-    if (index.row() < 0 || index.row() >= m_items.count())
+    if (index.row() < 0 || index.row() >= m_items.count()) {
+        qDebug() << "Row not found" << index.row();
         return QVariant();
+    }
 
     CouponItem item = m_items.at(index.row());
+
     switch (role) {
     case IdRole:
         return item.id;
@@ -85,6 +127,9 @@ QVariant CouponModel::data(const QModelIndex &index, int role) const
     case CreateDateRole:
         return item.createDate.toString("dd.MM.yyyy");
         break;
+    case ShortDescriptionRole:
+        return item.shortDescription;
+        break;
     default:
         return QVariant();
         break;
@@ -99,6 +144,7 @@ QHash<int, QByteArray> CouponModel::roleNames() const {
     roles[CreateDateRole] = "createDate";
     roles[BoughtCountRole] = "boughtCount";
     roles[CityNameRole] = "cityName";
+    roles[ShortDescriptionRole] = "shortDescription";
     return roles;
 }
 
@@ -108,4 +154,4 @@ int CouponModel::rowCount(const QModelIndex &parent) const
     return m_items.count();
 }
 
-int CouponModel::count() const { return m_items.size(); }
+int CouponModel::count() const { return m_items.count(); }

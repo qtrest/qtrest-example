@@ -4,6 +4,7 @@
 #include <QAbstractListModel>
 #include <QJsonDocument>
 #include <QDate>
+#include <QtQml>
 
 class CouponModel;
 class QNetworkReply;
@@ -22,6 +23,7 @@ private:
     int cityId;
     QString cityName;
     QString pageLink;
+    QString shortDescription;
     bool isArchive;
     friend CouponModel;
 };
@@ -35,6 +37,12 @@ public:
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(QString sort READ sort WRITE setSort NOTIFY sortChanged)
     Q_PROPERTY(int perPage READ perPage WRITE setPerPage NOTIFY perPageChanged)
+    Q_PROPERTY(int currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
+    Q_PROPERTY(int totalCount READ totalCount WRITE setTotalCount NOTIFY totalCountChanged)
+    Q_PROPERTY(int pageCount READ pageCount WRITE setPageCount NOTIFY pageCountChanged)
+    Q_PROPERTY(LoadingStatus loadingStatus READ loadingStatus WRITE setLoadingStatus NOTIFY loadingStatusChanged)
+
+    Q_ENUMS(LoadingStatus)
 
     enum CouponRoles {
         IdRole = Qt::UserRole + 1,
@@ -44,7 +52,14 @@ public:
         CreateDateRole,
         SourceServiceNameRole,
         CityNameRole,
-        BoughtCountRole
+        BoughtCountRole,
+        ShortDescriptionRole
+    };
+
+    enum LoadingStatus {
+        Idle,
+        FullReloadProcessing,
+        LoadMoreProcessing
     };
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -62,6 +77,31 @@ public:
         return m_perPage;
     }
 
+    int currentPage() const
+    {
+        return m_currentPage;
+    }
+
+    int totalCount() const
+    {
+        return m_totalCount;
+    }
+
+    int pageCount() const
+    {
+        return m_pageCount;
+    }
+
+    LoadingStatus loadingStatus() const
+    {
+        return m_loadingStatus;
+    }
+
+    // Do not forget to declare your class to the QML system.
+    static void declareQML() {
+        qmlRegisterType<CouponModel>("ru.forsk.coupons", 1, 0, "CouponModel");
+    }
+
 signals:
     void countChanged();
 
@@ -69,9 +109,18 @@ signals:
 
     void perPageChanged(int perPage);
 
+    void currentPageChanged(int currentPage);
+
+    void totalCountChanged(int totalCount);
+
+    void pageCountChanged(int pageCount);
+
+    void loadingStatusChanged(LoadingStatus loadingStatus);
+
 public slots:
     void update();
-    void updateFinished(QJsonDocument json);
+    void more();
+    void updateFinished(QJsonDocument json, QNetworkReply *reply);
 
     void setSort(QString sort)
     {
@@ -91,6 +140,43 @@ public slots:
         emit perPageChanged(perPage);
     }
 
+    void setLoadingStatus(LoadingStatus loadingStatus)
+    {
+        if (m_loadingStatus == loadingStatus)
+            return;
+
+        m_loadingStatus = loadingStatus;
+        emit loadingStatusChanged(loadingStatus);
+    }
+
+protected slots:
+    void setCurrentPage(int currentPage)
+    {
+        if (m_currentPage == currentPage)
+            return;
+
+        m_currentPage = currentPage;
+        emit currentPageChanged(currentPage);
+    }
+
+    void setTotalCount(int totalCount)
+    {
+        if (m_totalCount == totalCount)
+            return;
+
+        m_totalCount = totalCount;
+        emit totalCountChanged(totalCount);
+    }
+
+    void setPageCount(int pageCount)
+    {
+        if (m_pageCount == pageCount)
+            return;
+
+        m_pageCount = pageCount;
+        emit pageCountChanged(pageCount);
+    }
+
 protected:
     QHash<int, QByteArray> roleNames() const;
 private:
@@ -98,6 +184,10 @@ private:
     QNetworkReply *currentReply;
     QString m_sort;
     int m_perPage;
+    int m_currentPage;
+    int m_totalCount;
+    int m_pageCount;
+    LoadingStatus m_loadingStatus;
 };
 
 #endif // COUPONMODEL_H

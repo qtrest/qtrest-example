@@ -18,6 +18,7 @@ void APIManager::replyFinished(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError) {
         qDebug() << reply->error() << reply->errorString();
+        emit replyError(reply, reply->error(), reply->errorString());
     }
 }
 
@@ -63,7 +64,7 @@ QJsonDocument APIManager::getJSONDocument(QByteArray bytes)
 
     QJsonParseError parseError;
     QJsonDocument document = QJsonDocument::fromJson(bytes, &parseError);
-    qDebug() << document.isArray();
+    //qDebug() << document.isArray();
 
 //    QFile file("json.txt");
 //    file.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -80,7 +81,7 @@ QJsonDocument APIManager::getJSONDocument(QByteArray bytes)
     //qDebug() << str.length();
 }
 
-QNetworkReply *APIManager::getCoupon(QString sort, int perPage)
+QNetworkReply *APIManager::getCoupon(QString sort, int perPage, int page)
 {
     //URL and GET parameters
     QUrl url = QUrl(_baseUrl+"/v1/coupon");
@@ -91,6 +92,7 @@ QNetworkReply *APIManager::getCoupon(QString sort, int perPage)
     }
 
     query.addQueryItem("per-page", QString::number(perPage));
+    query.addQueryItem("page", QString::number(page));
 
     url.setQuery(query.query());
 
@@ -107,12 +109,10 @@ QNetworkReply *APIManager::getCoupon(QString sort, int perPage)
 
 void APIManager::slotGetCouponFinished()
 {
-
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     if (!checkReplyIsError(reply) && reply->isFinished()) {
-        qDebug() << "finished";
-        emit getCouponFinished(getJSONDocument(reply->readAll()));
+        //qDebug() << "finished";
+        emit getCouponFinished(getJSONDocument(reply->readAll()), reply);
     }
-    reply->deleteLater();
 }
 

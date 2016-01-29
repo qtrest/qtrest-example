@@ -17,9 +17,7 @@ int main(int argc, char *argv[])
     QString fileName = "skidkz_" + languageCode;
 
     QTranslator qtTranslator;
-    if ( qtTranslator.load(fileName, ":/i18n/") ){
-        qDebug() << "Translation file loaded" << fileName;
-    } else {
+    if ( !qtTranslator.load(fileName, ":/i18n/") ){
         qDebug() << "Translation file not loaded:" << fileName;
         qDebug() << "Language " << languageCode << " not supported yet";
     }
@@ -34,10 +32,8 @@ int main(int argc, char *argv[])
     QtAwesome* awesome = new QtAwesome( qApp );
     awesome->initFontAwesome();
 
-    qDebug() << awesome->iconLink( "beer" );
-
     //models
-    qmlRegisterType<CouponModel>("ru.forsk.coupons", 1, 0, "CouponModel");
+    CouponModel::declareQML();
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("awesome", awesome);

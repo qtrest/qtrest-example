@@ -54,7 +54,7 @@ ApplicationWindow {
     CouponModel {
         id: coupons;
         sort: "-id"
-        perPage: 50
+        perPage: 20
         Component.onCompleted: update()
     }
 
