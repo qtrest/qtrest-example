@@ -41,6 +41,7 @@ public:
     Q_PROPERTY(int totalCount READ totalCount WRITE setTotalCount NOTIFY totalCountChanged)
     Q_PROPERTY(int pageCount READ pageCount WRITE setPageCount NOTIFY pageCountChanged)
     Q_PROPERTY(LoadingStatus loadingStatus READ loadingStatus WRITE setLoadingStatus NOTIFY loadingStatusChanged)
+    Q_PROPERTY(QVariantMap filters READ filters WRITE setFilters NOTIFY filtersChanged)
 
     Q_ENUMS(LoadingStatus)
 
@@ -58,6 +59,7 @@ public:
 
     enum LoadingStatus {
         Idle,
+        RequestToReload,
         FullReloadProcessing,
         LoadMoreProcessing
     };
@@ -102,6 +104,11 @@ public:
         qmlRegisterType<CouponModel>("ru.forsk.coupons", 1, 0, "CouponModel");
     }
 
+    QVariantMap filters() const
+    {
+        return m_filters;
+    }
+
 signals:
     void countChanged();
 
@@ -117,10 +124,13 @@ signals:
 
     void loadingStatusChanged(LoadingStatus loadingStatus);
 
+    void filtersChanged(QVariantMap filters);
+
 public slots:
-    void update();
-    void more();
     void updateFinished(QJsonDocument json, QNetworkReply *reply);
+    bool canFetchMore(const QModelIndex &parent) const;
+    void fetchMore(const QModelIndex &parent);
+    void reload();
 
     void setSort(QString sort)
     {
@@ -147,6 +157,15 @@ public slots:
 
         m_loadingStatus = loadingStatus;
         emit loadingStatusChanged(loadingStatus);
+    }
+
+    void setFilters(QVariantMap filters)
+    {
+        if (m_filters == filters)
+            return;
+
+        m_filters = filters;
+        emit filtersChanged(filters);
     }
 
 protected slots:
@@ -188,6 +207,7 @@ private:
     int m_totalCount;
     int m_pageCount;
     LoadingStatus m_loadingStatus;
+    QVariantMap m_filters;
 };
 
 #endif // COUPONMODEL_H

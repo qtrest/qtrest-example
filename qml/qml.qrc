@@ -4,5 +4,10 @@
         <file>CouponsList.qml</file>
         <file>CouponsListDelegate.qml</file>
         <file>includes/Utils.qml</file>
+        <file>About.qml</file>
+        <file>qtlabscontrols.conf</file>
+        <file>Statistics.qml</file>
+        <file>ActualCouponsList.qml</file>
+        <file>ArchiveCouponsList.qml</file>
     </qresource>
 </RCC>

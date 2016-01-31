@@ -66,10 +66,10 @@ QJsonDocument APIManager::getJSONDocument(QByteArray bytes)
     QJsonDocument document = QJsonDocument::fromJson(bytes, &parseError);
     //qDebug() << document.isArray();
 
-//    QFile file("json.txt");
-//    file.open(QIODevice::WriteOnly | QIODevice::Text);
-//    QTextStream out(&file);
-//    out << str;
+    //    QFile file("json.txt");
+    //    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    //    QTextStream out(&file);
+    //    out << str;
 
     if (parseError.error != QJsonParseError::NoError) {
         qDebug() << parseError.errorString();
@@ -81,7 +81,7 @@ QJsonDocument APIManager::getJSONDocument(QByteArray bytes)
     //qDebug() << str.length();
 }
 
-QNetworkReply *APIManager::getCoupon(QString sort, int perPage, int page)
+QNetworkReply *APIManager::getCoupon(QString sort, int perPage, int page, QVariantMap filters)
 {
     //URL and GET parameters
     QUrl url = QUrl(_baseUrl+"/v1/coupon");
@@ -93,6 +93,14 @@ QNetworkReply *APIManager::getCoupon(QString sort, int perPage, int page)
 
     query.addQueryItem("per-page", QString::number(perPage));
     query.addQueryItem("page", QString::number(page));
+
+    if (!filters.isEmpty()) {
+        QMapIterator<QString, QVariant> i(filters);
+        while (i.hasNext()) {
+            i.next();
+            query.addQueryItem(i.key(), i.value().toString());
+        }
+    }
 
     url.setQuery(query.query());
 

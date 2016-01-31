@@ -1,15 +1,21 @@
-#include <QApplication>
+#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <mobile/adctl/adctl.h>
 #include "api/apimanager.h"
 #include "api/models/couponmodel.h"
-#include <QtAwesome.h>
+#include <QtAwesomeAndroid.h>
 #include <QTranslator>
+#include <QSettings>
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QGuiApplication::setApplicationName("Skid.KZ");
+    QGuiApplication::setApplicationVersion("1.0");
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
+    QGuiApplication app(argc, argv);
+
+    //i18n
     QString languageCode = QLocale::system().name();
     if (languageCode.contains("_")) {
         languageCode = languageCode.split("_").at(0);
@@ -24,16 +30,19 @@ int main(int argc, char *argv[])
     app.installTranslator(&qtTranslator);
 
     //AdCtl
-    QApplication::setApplicationName("Skid.KZ");
-    QApplication::setApplicationVersion("1.0");
     qmlRegisterType<AdCtl>("ru.forsk.adctl", 1, 0, "AdCtl");
 
     //Font Awesome
-    QtAwesome* awesome = new QtAwesome( qApp );
+    QtAwesomeAndroid* awesome = new QtAwesomeAndroid( qApp );
+    awesome->setDefaultOption( "color", QColor(255,255,255) );
     awesome->initFontAwesome();
 
     //models
     CouponModel::declareQML();
+
+    //settings
+    QSettings settings;
+    qputenv("QT_LABS_CONTROLS_STYLE", settings.value("style").toByteArray());
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("awesome", awesome);

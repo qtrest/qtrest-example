@@ -15,7 +15,7 @@ class APIManager : public QObject, public uSingleton<APIManager>
     Q_OBJECT
 public:
     explicit APIManager(QObject *parent = 0);
-    QNetworkReply *getCoupon(QString sort, int perPage = 20, int page = 1);
+    QNetworkReply *getCoupon(QString sort, int perPage = 20, int page = 1, QVariantMap filters = QVariantMap());
 
 signals:
     void getCouponFinished(QJsonDocument json, QNetworkReply *reply);

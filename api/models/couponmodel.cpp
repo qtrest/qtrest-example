@@ -4,39 +4,19 @@
 #include <QJsonObject>
 #include <QNetworkReply>
 
-CouponModel::CouponModel(QObject *parent) : QAbstractListModel(parent), m_sort("-id"), m_perPage(20), currentReply(NULL)
+CouponModel::CouponModel(QObject *parent) : QAbstractListModel(parent), m_sort("-id"), m_perPage(20), currentReply(NULL),m_currentPage(0)
 {
     setLoadingStatus(LoadingStatus::Idle);
     connect(&couponapi,SIGNAL(getCouponFinished(QJsonDocument, QNetworkReply *)), this, SLOT(updateFinished(QJsonDocument, QNetworkReply *)));
 }
 
-void CouponModel::update()
-{
-    if (loadingStatus() != LoadingStatus::Idle) {
-        return;
-    }
-
-    qDebug() << "start full";
-    setLoadingStatus(LoadingStatus::FullReloadProcessing);
-    setCurrentPage(1);
-    currentReply = couponapi.getCoupon(sort(), perPage());
-}
-
-void CouponModel::more()
-{
-    if (loadingStatus() != LoadingStatus::Idle) {
-        return;
-    }
-
-    qDebug() << "start more";
-    setLoadingStatus(LoadingStatus::LoadMoreProcessing);
-    setCurrentPage(currentPage()+1);
-    currentReply = couponapi.getCoupon(sort(), perPage(), currentPage());
-}
-
 void CouponModel::updateFinished(QJsonDocument json, QNetworkReply *reply)
 {
     qDebug() << "updateFinished";
+
+    if (this->loadingStatus() == LoadingStatus::Idle) {
+        return;
+    }
 
     //TODO check is reply for me
 
@@ -97,6 +77,46 @@ void CouponModel::updateFinished(QJsonDocument json, QNetworkReply *reply)
     setLoadingStatus(LoadingStatus::Idle);
 
     emit countChanged();
+}
+
+bool CouponModel::canFetchMore(const QModelIndex &parent) const
+{
+    Q_UNUSED(parent)
+
+    if (currentPage() < totalCount()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void CouponModel::fetchMore(const QModelIndex &parent)
+{
+    Q_UNUSED(parent)
+
+    if (loadingStatus() != LoadingStatus::Idle && loadingStatus() != LoadingStatus::RequestToReload) {
+        return;
+    }
+
+    qDebug() << "fetchMore";
+
+    if (loadingStatus() == LoadingStatus::RequestToReload) {
+        setCurrentPage(0);
+        setLoadingStatus(LoadingStatus::FullReloadProcessing);
+    } else {
+        setLoadingStatus(LoadingStatus::LoadMoreProcessing);
+    }
+
+    int nextPage = currentPage()+1;
+    setCurrentPage(nextPage);
+
+    currentReply = couponapi.getCoupon(sort(), perPage(), currentPage(), filters());
+}
+
+void CouponModel::reload()
+{
+    setLoadingStatus(LoadingStatus::RequestToReload);
+    this->fetchMore(QModelIndex());
 }
 
 QVariant CouponModel::data(const QModelIndex &index, int role) const

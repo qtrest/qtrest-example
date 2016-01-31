@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.4
+import Qt.labs.controls 1.0
 import QtQuick.Layouts 1.2
 
 Item {
@@ -50,6 +50,9 @@ Item {
             }
 
             BusyIndicator {
+                width: settings.busyIndicatorSize
+                height: settings.busyIndicatorSize
+
                 running: image.status === Image.Loading
                 visible: image.status != Image.Ready
                 anchors.centerIn: parent
