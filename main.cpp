@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
 {
     QGuiApplication::setApplicationName("Skid.KZ");
     QGuiApplication::setApplicationVersion("1.0");
+    QGuiApplication::setOrganizationName("Forsk.Ru");
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
@@ -30,7 +31,7 @@ int main(int argc, char *argv[])
     app.installTranslator(&qtTranslator);
 
     //AdCtl
-    qmlRegisterType<AdCtl>("ru.forsk.adctl", 1, 0, "AdCtl");
+    AdCtl::declareQML();
 
     //Font Awesome
     QtAwesomeAndroid* awesome = new QtAwesomeAndroid( qApp );

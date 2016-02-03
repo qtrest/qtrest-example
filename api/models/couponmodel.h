@@ -42,6 +42,8 @@ public:
     Q_PROPERTY(int pageCount READ pageCount WRITE setPageCount NOTIFY pageCountChanged)
     Q_PROPERTY(LoadingStatus loadingStatus READ loadingStatus WRITE setLoadingStatus NOTIFY loadingStatusChanged)
     Q_PROPERTY(QVariantMap filters READ filters WRITE setFilters NOTIFY filtersChanged)
+    Q_PROPERTY(QString loadingErrorString READ loadingErrorString WRITE setLoadingErrorString NOTIFY loadingErrorStringChanged)
+    Q_PROPERTY(QNetworkReply::NetworkError loadingErrorCode READ loadingErrorCode WRITE setLoadingErrorCode NOTIFY loadingErrorCodeChanged)
 
     Q_ENUMS(LoadingStatus)
 
@@ -61,7 +63,8 @@ public:
         Idle,
         RequestToReload,
         FullReloadProcessing,
-        LoadMoreProcessing
+        LoadMoreProcessing,
+        Error
     };
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -109,6 +112,16 @@ public:
         return m_filters;
     }
 
+    QString loadingErrorString() const
+    {
+        return m_loadingErrorString;
+    }
+
+    QNetworkReply::NetworkError loadingErrorCode() const
+    {
+        return m_loadingErrorCode;
+    }
+
 signals:
     void countChanged();
 
@@ -126,11 +139,17 @@ signals:
 
     void filtersChanged(QVariantMap filters);
 
+    void loadingErrorStringChanged(QString loadingErrorString);
+
+    void loadingErrorCodeChanged(QNetworkReply::NetworkError loadingErrorCode);
+
 public slots:
     void updateFinished(QJsonDocument json, QNetworkReply *reply);
     bool canFetchMore(const QModelIndex &parent) const;
     void fetchMore(const QModelIndex &parent);
     void reload();
+
+    void replyError(QNetworkReply *reply, QNetworkReply::NetworkError error, QString errorString);
 
     void setSort(QString sort)
     {
@@ -168,6 +187,24 @@ public slots:
         emit filtersChanged(filters);
     }
 
+    void setLoadingErrorString(QString loadingErrorString)
+    {
+        if (m_loadingErrorString == loadingErrorString)
+            return;
+
+        m_loadingErrorString = loadingErrorString;
+        emit loadingErrorStringChanged(loadingErrorString);
+    }
+
+    void setLoadingErrorCode(QNetworkReply::NetworkError loadingErrorCode)
+    {
+        if (m_loadingErrorCode == loadingErrorCode)
+            return;
+
+        m_loadingErrorCode = loadingErrorCode;
+        emit loadingErrorCodeChanged(loadingErrorCode);
+    }
+
 protected slots:
     void setCurrentPage(int currentPage)
     {
@@ -199,7 +236,8 @@ protected slots:
 protected:
     QHash<int, QByteArray> roleNames() const;
 private:
-    QList<CouponItem> m_items;
+    //QList<CouponItem> m_items;
+
     QNetworkReply *currentReply;
     QString m_sort;
     int m_perPage;
@@ -208,6 +246,22 @@ private:
     int m_pageCount;
     LoadingStatus m_loadingStatus;
     QVariantMap m_filters;
+    QString m_loadingErrorString;
+    QNetworkReply::NetworkError m_loadingErrorCode;
+
+    //second chance
+    QHash<int, QByteArray> m_roleNames;
+    QList<QVariantMap> m_items;
+
+//    void add(int index, QString key, QVariant value) {
+//        //QVariantMap
+
+//        data.insert(key,value);
+//    }
+
+//    void value(int index, QString key) {
+//        data.value(key);
+//    }
 };
 
 #endif // COUPONMODEL_H

@@ -8,6 +8,7 @@ CouponModel::CouponModel(QObject *parent) : QAbstractListModel(parent), m_sort("
 {
     setLoadingStatus(LoadingStatus::Idle);
     connect(&couponapi,SIGNAL(getCouponFinished(QJsonDocument, QNetworkReply *)), this, SLOT(updateFinished(QJsonDocument, QNetworkReply *)));
+    connect(&couponapi,SIGNAL(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)), this, SLOT(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)));
 }
 
 void CouponModel::updateFinished(QJsonDocument json, QNetworkReply *reply)
@@ -45,29 +46,42 @@ void CouponModel::updateFinished(QJsonDocument json, QNetworkReply *reply)
     beginInsertRows(this->index(rowCount(), 0), insertFrom, insertCount);
 
     //http://stackoverflow.com/questions/19822211/qt-parsing-json-using-qjsondocument-qjsonobject-qjsonarray
+    bool first = true;
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject obj = value.toObject();
 
-        CouponItem item;
-        item.id = obj["id"].toString();
-        item.title = obj["title"].toString();
-        item.mainImageLink = obj["mainImageLink"].toString();
+        if (first) {
+            QStringList keys = obj.keys();
+            int roleIndex = 1;
+            foreach (QString key, keys) {
+                m_roleNames[roleIndex] = QByteArray().append(key);
+                roleIndex++;
+            }
 
-        QDateTime timestamp;
-        timestamp.setTime_t(obj["createTimestamp"].toInt());
-        //item.createDate = timestamp.toString("dd.MM.yyyy");
-        item.createDate = QDateTime::fromString(obj["createTimestamp"].toString(), "yyyy-MM-dd hh:mm:ss").date();
-        //qDebug() << item.createDate.toString() << obj["createTimestamp"].toString();
-        item.createTimestamp = obj["createTimestamp"].toInt();
+            first = false;
+        }
 
-        item.boughtCount = obj["boughtCount"].toString();
-        //qDebug() << obj["boughtCount"].toInt() << obj["boughtCount"].toString();
-        item.cityId = obj["cityId"].toInt();
-        item.cityName = obj["cityName"].toString();
+        QVariantMap item1 = obj.toVariantMap();
+        m_items.append(item1);
 
-        item.shortDescription = obj["shortDescription"].toString();
+//        CouponItem item;
+//        item.id = obj["id"].toString();
+//        item.title = obj["title"].toString();
+//        item.mainImageLink = obj["mainImageLink"].toString();
 
-        m_items.append(item);
+//        QDateTime timestamp;
+//        timestamp.setTime_t(obj["createTimestamp"].toInt());
+//        item.createDate = QDateTime::fromString(obj["createTimestamp"].toString(), "yyyy-MM-dd hh:mm:ss").date();
+//        item.createTimestamp = obj["createTimestamp"].toInt();
+
+//        item.boughtCount = obj["boughtCount"].toString();
+//        //qDebug() << obj["boughtCount"].toInt() << obj["boughtCount"].toString();
+//        item.cityId = obj["cityId"].toInt();
+//        item.cityName = obj["cityName"].toString();
+
+//        item.shortDescription = obj["shortDescription"].toString();
+
+//        m_items.append(item);
     }
 
     endInsertRows();
@@ -119,6 +133,14 @@ void CouponModel::reload()
     this->fetchMore(QModelIndex());
 }
 
+void CouponModel::replyError(QNetworkReply *reply, QNetworkReply::NetworkError error, QString errorString)
+{
+    Q_UNUSED(reply)
+    setLoadingErrorCode(error);
+    setLoadingErrorString(errorString);
+    setLoadingStatus(LoadingStatus::Error);
+}
+
 QVariant CouponModel::data(const QModelIndex &index, int role) const
 {
     if (index.row() < 0 || index.row() >= m_items.count()) {
@@ -126,46 +148,52 @@ QVariant CouponModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    CouponItem item = m_items.at(index.row());
+    QVariantMap item = m_items.at(index.row());
+    return item.value(m_roleNames[role]);
 
-    switch (role) {
-    case IdRole:
-        return item.id;
-        break;
-    case TitleRole:
-        return item.title;
-        break;
-    case MainImageLinkRole:
-        return item.mainImageLink;
-        break;
-    case CityNameRole:
-        return item.cityName;
-        break;
-    case BoughtCountRole:
-        return item.boughtCount;
-        break;
-    case CreateDateRole:
-        return item.createDate.toString("dd.MM.yyyy");
-        break;
-    case ShortDescriptionRole:
-        return item.shortDescription;
-        break;
-    default:
-        return QVariant();
-        break;
-    }
+//    CouponItem item = m_items.at(index.row());
+
+//    switch (role) {
+//    case IdRole:
+//        return item.id;
+//        break;
+//    case TitleRole:
+//        return item.title;
+//        break;
+//    case MainImageLinkRole:
+//        return item.mainImageLink;
+//        break;
+//    case CityNameRole:
+//        return item.cityName;
+//        break;
+//    case BoughtCountRole:
+//        return item.boughtCount;
+//        break;
+//    case CreateDateRole:
+//        return item.createDate.toString("dd.MM.yyyy");
+//        break;
+//    case ShortDescriptionRole:
+//        return item.shortDescription;
+//        break;
+//    default:
+//        return QVariant();
+//        break;
+//    }
 }
 
 QHash<int, QByteArray> CouponModel::roleNames() const {
-    QHash<int, QByteArray> roles;
-    roles[IdRole] = "id";
-    roles[TitleRole] = "title";
-    roles[MainImageLinkRole] = "mainImageLink";
-    roles[CreateDateRole] = "createDate";
-    roles[BoughtCountRole] = "boughtCount";
-    roles[CityNameRole] = "cityName";
-    roles[ShortDescriptionRole] = "shortDescription";
-    return roles;
+
+    return m_roleNames;
+
+//    QHash<int, QByteArray> roles;
+//    roles[IdRole] = "id";
+//    roles[TitleRole] = "title";
+//    roles[MainImageLinkRole] = "mainImageLink";
+//    roles[CreateDateRole] = "createDate";
+//    roles[BoughtCountRole] = "boughtCount";
+//    roles[CityNameRole] = "cityName";
+//    roles[ShortDescriptionRole] = "shortDescription";
+//    return roles;
 }
 
 int CouponModel::rowCount(const QModelIndex &parent) const

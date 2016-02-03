@@ -1,12 +1,33 @@
-import QtQuick 2.5
+import QtQuick 2.6
 import Qt.labs.controls 1.0
-import QtQuick.Layouts 1.2
+import QtQuick.Layouts 1.3
 import ru.forsk.coupons 1.0
 
 Item {
     id: couponsContainer
 
     property var couponsModel
+
+    ProgressBar {
+        id: progressBar
+
+        property int percent: couponsList.contentY
+        property int maxPercent: -200
+        property int isLoading: couponsModel.count > 0 && (couponsContainer.couponsModel.loadingStatus == CouponModel.FullReloadProcessing)
+
+        from: 0
+        value: percent
+        to: maxPercent
+
+        indeterminate: isLoading
+
+        opacity: isLoading ? 1 : position
+        visible: opacity > 0
+
+        width: parent.width
+        padding: 0
+        z: 100
+    }
 
     ListView {
         id: couponsList
@@ -68,28 +89,29 @@ Item {
         }
     }
 
-//    MouseArea {
-//        id: moveToTop
-//        width: parent.width
-//        height: settings.spacing
-//        anchors {
-//            top: couponsList.top
-//            left: couponsList.left
-//        }
-//        onClicked: {
-//            couponsList.contentY = -settings.spacing
-//            model.setLoadingStatus(CouponModel.Idle)
-//        }
-//    }
+    MouseArea {
+        id: moveToTop
+        width: parent.width
+        height: settings.spacing
+        anchors {
+            top: couponsList.top
+            left: couponsList.left
+        }
+        onClicked: {
+            //couponsList.contentY = -settings.spacing
+            couponsList.positionViewAtBeginning()
+            couponsModel.setLoadingStatus(CouponModel.Idle)
+        }
+    }
 
     BusyIndicator {
         id: emptyIndicator
-        width: settings.busyIndicatorSize
-        height: settings.busyIndicatorSize
+        width: settings.busyIndicatorSize*2
+        height: settings.busyIndicatorSize*2
 
-        running: couponsContainer.couponsModel.count == 0 && couponsContainer.couponsModel.loadingStatus != CouponModel.Idle
+        running: couponsContainer.couponsModel.count == 0 && (couponsContainer.couponsModel.loadingStatus != CouponModel.Idle || couponsContainer.couponsModel.loadingStatus != CouponModel.Error)
         visible: opacity > 0
-        opacity: couponsContainer.couponsModel.count == 0 && couponsContainer.couponsModel.loadingStatus != CouponModel.Idle ? 1 : 0
+        opacity: couponsContainer.couponsModel.count == 0 && (couponsContainer.couponsModel.loadingStatus != CouponModel.Idle || couponsContainer.couponsModel.loadingStatus != CouponModel.Error) ? 1 : 0
         anchors.centerIn: parent
         Behavior on opacity {
             NumberAnimation { duration: 400; }
@@ -99,9 +121,9 @@ Item {
     Text {
         id: emptyText
         visible: opacity > 0
-        opacity: couponsContainer.couponsModel.count == 0 && couponsContainer.couponsModel.loadingStatus == CouponModel.Idle ? 1 : 0
+        opacity: couponsContainer.couponsModel.count == 0 && (couponsContainer.couponsModel.loadingStatus == CouponModel.Idle || couponsContainer.couponsModel.loadingStatus == CouponModel.Error) ? 1 : 0
         anchors.centerIn: parent
-        text: qsTr("List is empty")
+        text: couponsContainer.couponsModel.loadingStatus != CouponModel.Error ? qsTr("List is empty") : couponsContainer.couponsModel.loadingErrorString
         font.pointSize: 18
         font.bold: true
         color: "white"
@@ -110,26 +132,26 @@ Item {
         }
     }
 
-    BusyIndicator {
-        id: fullReloadIndicator
-        width: settings.busyIndicatorSize
-        height: settings.busyIndicatorSize
-        //Component.onCompleted: console.log(settings.busyIndicatorSize)
+//    BusyIndicator {
+//        id: fullReloadIndicator
+//        width: settings.busyIndicatorSize
+//        height: settings.busyIndicatorSize
+//        //Component.onCompleted: console.log(settings.busyIndicatorSize)
 
-        Behavior on y {
-            NumberAnimation { duration: 400; easing.type: Easing.InOutBack }
-            enabled: couponsContainer.couponsModel.count > 0 && !couponsList.draggingVertically &&
-                     (couponsContainer.couponsModel.loadingStatus == CouponModel.RequestToReload || couponsContainer.couponsModel.loadingStatus == CouponModel.FullReloadProcessing)
-        }
+//        Behavior on y {
+//            NumberAnimation { duration: 400; easing.type: Easing.InOutBack }
+//            enabled: couponsContainer.couponsModel.count > 0 && !couponsList.draggingVertically &&
+//                     (couponsContainer.couponsModel.loadingStatus == CouponModel.RequestToReload || couponsContainer.couponsModel.loadingStatus == CouponModel.FullReloadProcessing)
+//        }
 
-        y: couponsContainer.couponsModel.count > 0 && !couponsList.draggingVertically &&
-           (couponsContainer.couponsModel.loadingStatus == CouponModel.RequestToReload || couponsContainer.couponsModel.loadingStatus == CouponModel.FullReloadProcessing)
-           ? couponsList.y + height*0.5 : -couponsList.contentY - height*1.5
+//        y: couponsContainer.couponsModel.count > 0 && !couponsList.draggingVertically &&
+//           (couponsContainer.couponsModel.loadingStatus == CouponModel.RequestToReload || couponsContainer.couponsModel.loadingStatus == CouponModel.FullReloadProcessing)
+//           ? couponsList.y + height*0.5 : -couponsList.contentY - height*1.5
 
-        anchors {
-            horizontalCenter: parent.horizontalCenter
-        }
-    }
+//        anchors {
+//            horizontalCenter: parent.horizontalCenter
+//        }
+//    }
 
     BusyIndicator {
         id: loadMoreIndicator

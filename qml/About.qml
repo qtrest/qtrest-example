@@ -1,7 +1,10 @@
-import QtQuick 2.0
+import QtQuick 2.6
 
-Item {
+Rectangle {
     anchors.fill: parent
+
+    property string titleText: qsTr("About")
+
     Text {
         id: about
         text: "About page"

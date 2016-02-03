@@ -1,9 +1,11 @@
-import QtQuick 2.0
+import QtQuick 2.6
 import Qt.labs.controls 1.0
-import QtQuick.Layouts 1.2
+import QtQuick.Layouts 1.3
 
 Item {
     height: information.height
+
+    property string detailSource: "qrc:/CouponDetail.qml"
 
     Rectangle {
         id: rectangle1
@@ -49,12 +51,23 @@ Item {
                 clip: true
             }
 
-            BusyIndicator {
-                width: settings.busyIndicatorSize
-                height: settings.busyIndicatorSize
+            //            BusyIndicator {
+            //                width: settings.busyIndicatorSize
+            //                height: settings.busyIndicatorSize
 
-                running: image.status === Image.Loading
+            //                running: image.status === Image.Loading
+            //                visible: image.status != Image.Ready
+            //                anchors.centerIn: parent
+            //            }
+
+            ProgressBar {
+                id: progressBar
+
+                indeterminate: true
+
                 visible: image.status != Image.Ready
+
+                width: parent.width / 2
                 anchors.centerIn: parent
             }
         }
@@ -185,6 +198,16 @@ Item {
                     }
                 }
             }
+        }
+    }
+
+    MouseArea {
+        id: detail
+        anchors.fill: parent
+
+        onClicked: {
+            stackView.push(detailSource)
+            drawer.close()
         }
     }
 }

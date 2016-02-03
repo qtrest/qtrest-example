@@ -1,18 +1,35 @@
-import QtQuick 2.5
+import QtQuick 2.6
 import QtQuick.Dialogs 1.2
-import "includes" as I
-import ru.forsk.adctl 1.0
-import QtQuick.Layouts 1.2
+import QtQuick.Layouts 1.3
+
 import Qt.labs.controls 1.0
 import Qt.labs.controls.material 1.0
+import Qt.labs.controls.universal 1.0
 import Qt.labs.settings 1.0
+
+import "includes" as I
+import ru.forsk.adctl 1.0
 
 ApplicationWindow {
     id: root
     visible: true
     width: 480
     height: 800
+
+    //    width: 360
+    //    height: 520
+
     title: qsTr("Skid.KZ")
+
+
+    //           [Controls]
+    //           Style=Material
+
+    //           [Material]
+    //           Primary=BlueGrey
+    //           Accent=BlueGrey
+    //           Theme=Dark
+
 
     Settings {
         id: settings
@@ -27,21 +44,27 @@ ApplicationWindow {
 
     header: ToolBar {
         RowLayout {
-            spacing: 20
+            spacing: 0
             anchors.fill: parent
 
             ToolButton {
                 id: menuBtn
                 label: Image {
                     anchors.centerIn: parent
-                    source: awesome.iconLink( "bars", "xxhdpi" )
+                    source: stackView.depth > 1 ? awesome.iconLink( "chevronleft", {}, "mdpi" ) : awesome.iconLink( "bars", {}, "mdpi" )
                 }
-                onClicked: drawer.open()
+                onClicked: {
+                    if (stackView.depth > 1) {
+                        stackView.pop()
+                    } else {
+                        drawer.open()
+                    }
+                }
             }
 
             Label {
                 id: titleLabel
-                text: "Skid.KZ"
+                text: "Skid.KZ - " + stackView.currentItem.titleText
                 font.pixelSize: 20
                 elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
@@ -97,7 +120,7 @@ ApplicationWindow {
 
         Pane {
             padding: 0
-            width: Math.min(root.width, root.height) / 3 * 2
+            width: Math.min(root.width, root.height) * 0.8
             height: root.height
 
             ListView {
@@ -112,7 +135,6 @@ ApplicationWindow {
                     onClicked: {
                         if (listView.currentIndex != index) {
                             listView.currentIndex = index
-                            titleLabel.text = model.title
                             stackView.replace(model.source)
                         }
                         drawer.close()
@@ -120,10 +142,10 @@ ApplicationWindow {
                 }
 
                 model: ListModel {
-                    ListElement { title: "Actual"; source: "qrc:/ActualCouponsList.qml" }
-                    ListElement { title: "Archive"; source: "qrc:/ArchiveCouponsList.qml" }
-                    ListElement { title: "Statistics"; source: "qrc:/Statistics.qml" }
-                    ListElement { title: "About"; source: "qrc:/About.qml" }
+                    ListElement { title: qsTr("Actual"); source: "qrc:/ActualCouponsList.qml" }
+                    ListElement { title: qsTr("Archive"); source: "qrc:/ArchiveCouponsList.qml" }
+                    ListElement { title: qsTr("Statistics"); source: "qrc:/Statistics.qml" }
+                    ListElement { title: qsTr("About"); source: "qrc:/About.qml" }
                 }
 
                 ScrollIndicator.vertical: ScrollIndicator { }
@@ -137,7 +159,14 @@ ApplicationWindow {
         anchors.fill: parent
 
         initialItem: ActualCouponsList {
-                anchors.fill: parent
-            }
+            anchors.fill: parent
         }
+    }
+
+    onClosing: {
+        if (stackView.depth > 1) {
+            stackView.pop()
+            close.accepted = false
+        }
+    }
 }

@@ -3,5 +3,6 @@
         <file>images/bgvar1.png</file>
         <file>images/skid_bg_2.jpg</file>
         <file>i18n/skidkz_ru.qm</file>
+        <file>qtlabscontrols.conf</file>
     </qresource>
 </RCC>
