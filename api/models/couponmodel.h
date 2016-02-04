@@ -6,27 +6,27 @@
 #include <QDate>
 #include <QtQml>
 
-class CouponModel;
+//class CouponModel;
 class QNetworkReply;
 
-class CouponItem
-{
-private:
-    QString id;
-    QString title;
-    QString mainImageLink;
-    QString createTimestamp;
-    QDate createDate;
-    int sourceServiceId;
-    QString sourceServiceName;
-    QString boughtCount;
-    int cityId;
-    QString cityName;
-    QString pageLink;
-    QString shortDescription;
-    bool isArchive;
-    friend CouponModel;
-};
+//class CouponItem
+//{
+//private:
+//    QString id;
+//    QString title;
+//    QString mainImageLink;
+//    QString createTimestamp;
+//    QDate createDate;
+//    int sourceServiceId;
+//    QString sourceServiceName;
+//    QString boughtCount;
+//    int cityId;
+//    QString cityName;
+//    QString pageLink;
+//    QString shortDescription;
+//    bool isArchive;
+//    friend CouponModel;
+//};
 
 class CouponModel : public QAbstractListModel
 {
