@@ -8,7 +8,7 @@
 
 class QNetworkAccessManager;
 class QNetworkReply;
-#define couponapi APIManager::instance()
+#define apimanager APIManager::instance()
 
 class APIManager : public QObject, public uSingleton<APIManager>
 {

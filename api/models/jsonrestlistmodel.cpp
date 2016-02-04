@@ -6,11 +6,11 @@
 JsonRestListModel::JsonRestListModel(QObject *parent) : QAbstractListModel(parent), m_sort("-id"), m_perPage(20), currentReply(NULL), m_currentPage(0), m_roleNamesIndex(0)
 {
     setLoadingStatus(LoadingStatus::Idle);
-    connect(&couponapi,SIGNAL(getCouponFinished(QJsonDocument, QNetworkReply *)), this, SLOT(updateFinished(QJsonDocument, QNetworkReply *)));
-    connect(&couponapi,SIGNAL(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)), this, SLOT(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)));
+    connect(&apimanager,SIGNAL(getCouponFinished(QJsonDocument, QNetworkReply *)), this, SLOT(fetchMoreFinished(QJsonDocument, QNetworkReply *)));
+    connect(&apimanager,SIGNAL(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)), this, SLOT(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)));
 }
 
-void JsonRestListModel::updateFinished(QJsonDocument json, QNetworkReply *reply)
+void JsonRestListModel::fetchMoreFinished(QJsonDocument json, QNetworkReply *reply)
 {
     qDebug() << "updateFinished";
 
@@ -99,7 +99,7 @@ void JsonRestListModel::fetchMore(const QModelIndex &parent)
     int nextPage = currentPage()+1;
     setCurrentPage(nextPage);
 
-    fetchMoreHelper(parent);
+    fetchMoreData(parent);
 }
 
 void JsonRestListModel::reload()

@@ -107,7 +107,7 @@ signals:
     void loadingErrorCodeChanged(QNetworkReply::NetworkError loadingErrorCode);
 
 public slots:
-    void updateFinished(QJsonDocument json, QNetworkReply *reply);
+    void fetchMoreFinished(QJsonDocument json, QNetworkReply *reply);
     bool canFetchMore(const QModelIndex &parent) const;
     void fetchMore(const QModelIndex &parent);
     void reload();
@@ -197,7 +197,7 @@ protected slots:
     }
 
 protected:
-    virtual void fetchMoreHelper(const QModelIndex &parent) = 0;
+    virtual void fetchMoreData(const QModelIndex &parent) = 0;
     virtual QVariantMap processItem(QVariantMap item) = 0;
 
     QHash<int, QByteArray> roleNames() const;

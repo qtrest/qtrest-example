@@ -5,9 +5,9 @@ CouponModel::CouponModel(QObject *parent) : JsonRestListModel(parent)
 
 }
 
-void CouponModel::fetchMoreHelper(const QModelIndex &parent)
+void CouponModel::fetchMoreData(const QModelIndex &parent)
 {
-    currentReply = couponapi.getCoupon(sort(), perPage(), currentPage(), filters());
+    currentReply = apimanager.getCoupon(sort(), perPage(), currentPage(), filters());
 }
 
 QVariantMap CouponModel::processItem(QVariantMap item)
