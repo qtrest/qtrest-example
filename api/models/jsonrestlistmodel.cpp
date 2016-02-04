@@ -1,16 +1,16 @@
-#include "restlistmodel.h"
+#include "jsonrestlistmodel.h"
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QNetworkReply>
 
-RESTListModel::RESTListModel(QObject *parent) : QAbstractListModel(parent), m_sort("-id"), m_perPage(20), currentReply(NULL), m_currentPage(0), m_roleNamesIndex(0)
+JsonRestListModel::JsonRestListModel(QObject *parent) : QAbstractListModel(parent), m_sort("-id"), m_perPage(20), currentReply(NULL), m_currentPage(0), m_roleNamesIndex(0)
 {
     setLoadingStatus(LoadingStatus::Idle);
     connect(&couponapi,SIGNAL(getCouponFinished(QJsonDocument, QNetworkReply *)), this, SLOT(updateFinished(QJsonDocument, QNetworkReply *)));
     connect(&couponapi,SIGNAL(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)), this, SLOT(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)));
 }
 
-void RESTListModel::updateFinished(QJsonDocument json, QNetworkReply *reply)
+void JsonRestListModel::updateFinished(QJsonDocument json, QNetworkReply *reply)
 {
     qDebug() << "updateFinished";
 
@@ -68,7 +68,7 @@ void RESTListModel::updateFinished(QJsonDocument json, QNetworkReply *reply)
     emit countChanged();
 }
 
-bool RESTListModel::canFetchMore(const QModelIndex &parent) const
+bool JsonRestListModel::canFetchMore(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
 
@@ -79,7 +79,7 @@ bool RESTListModel::canFetchMore(const QModelIndex &parent) const
     }
 }
 
-void RESTListModel::fetchMore(const QModelIndex &parent)
+void JsonRestListModel::fetchMore(const QModelIndex &parent)
 {
     Q_UNUSED(parent)
 
@@ -102,13 +102,13 @@ void RESTListModel::fetchMore(const QModelIndex &parent)
     fetchMoreHelper(parent);
 }
 
-void RESTListModel::reload()
+void JsonRestListModel::reload()
 {
     setLoadingStatus(LoadingStatus::RequestToReload);
     this->fetchMore(QModelIndex());
 }
 
-void RESTListModel::replyError(QNetworkReply *reply, QNetworkReply::NetworkError error, QString errorString)
+void JsonRestListModel::replyError(QNetworkReply *reply, QNetworkReply::NetworkError error, QString errorString)
 {
     Q_UNUSED(reply)
     setLoadingErrorCode(error);
@@ -116,7 +116,7 @@ void RESTListModel::replyError(QNetworkReply *reply, QNetworkReply::NetworkError
     setLoadingStatus(LoadingStatus::Error);
 }
 
-QVariant RESTListModel::data(const QModelIndex &index, int role) const
+QVariant JsonRestListModel::data(const QModelIndex &index, int role) const
 {
     if (index.row() < 0 || index.row() >= m_items.count()) {
         qDebug() << "Row not found" << index.row();
@@ -127,12 +127,12 @@ QVariant RESTListModel::data(const QModelIndex &index, int role) const
     return item.value(m_roleNames[role]);
 }
 
-QHash<int, QByteArray> RESTListModel::roleNames() const
+QHash<int, QByteArray> JsonRestListModel::roleNames() const
 {
     return m_roleNames;
 }
 
-void RESTListModel::updateHeadersData(QNetworkReply *reply)
+void JsonRestListModel::updateHeadersData(QNetworkReply *reply)
 {
     //update headers data
     this->setCurrentPage(reply->rawHeader("X-Pagination-Current-Page").toInt());
@@ -141,10 +141,10 @@ void RESTListModel::updateHeadersData(QNetworkReply *reply)
     reply->deleteLater();
 }
 
-int RESTListModel::rowCount(const QModelIndex &parent) const
+int JsonRestListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     return m_items.count();
 }
 
-int RESTListModel::count() const { return m_items.count(); }
+int JsonRestListModel::count() const { return m_items.count(); }

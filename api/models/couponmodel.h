@@ -1,9 +1,9 @@
 #ifndef COUPONMODEL_H
 #define COUPONMODEL_H
 
-#include "restlistmodel.h"
+#include "jsonrestlistmodel.h"
 
-class CouponModel : public RESTListModel
+class CouponModel : public JsonRestListModel
 {
     Q_OBJECT
 public:

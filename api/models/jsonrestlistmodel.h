@@ -8,11 +8,11 @@
 
 class QNetworkReply;
 
-class RESTListModel : public QAbstractListModel
+class JsonRestListModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    explicit RESTListModel(QObject *parent = 0);
+    explicit JsonRestListModel(QObject *parent = 0);
 
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(QString sort READ sort WRITE setSort NOTIFY sortChanged)

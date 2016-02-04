@@ -1,6 +1,6 @@
 #include "couponmodel.h"
 
-CouponModel::CouponModel(QObject *parent) : RESTListModel(parent)
+CouponModel::CouponModel(QObject *parent) : JsonRestListModel(parent)
 {
 
 }
