@@ -60,35 +60,35 @@ bool APIManager::checkReplyIsError(QNetworkReply *reply)
 QJsonDocument APIManager::getJSONDocument(QByteArray bytes)
 {
     QString str = QString::fromUtf8(bytes.data(), bytes.size());
-    //int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 
     QJsonParseError parseError;
     QJsonDocument document = QJsonDocument::fromJson(bytes, &parseError);
-    //qDebug() << document.isArray();
-
-    //    QFile file("json.txt");
-    //    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    //    QTextStream out(&file);
-    //    out << str;
 
     if (parseError.error != QJsonParseError::NoError) {
         qDebug() << parseError.errorString();
     }
 
     return document;
-
-    //qDebug() << statusCode;
-    //qDebug() << str.length();
 }
 
-QNetworkReply *APIManager::getCoupon(QString sort, int perPage, int page, QVariantMap filters)
+QNetworkReply *APIManager::get(QUrl url)
+{
+    QNetworkRequest request(url);
+    setRawHeaders(&request);
+
+    QNetworkReply *reply = manager->get(request);
+    connectReplyToErrors(reply);
+    return reply;
+}
+
+QNetworkReply *APIManager::getCoupons(QStringList sort, int perPage, int page, QVariantMap filters, QStringList fields)
 {
     //URL and GET parameters
     QUrl url = QUrl(_baseUrl+"/v1/coupon");
     QUrlQuery query;
 
     if (!sort.isEmpty()) {
-        query.addQueryItem("sort", sort);
+        query.addQueryItem("sort", sort.join(","));
     }
 
     query.addQueryItem("per-page", QString::number(perPage));
@@ -102,25 +102,48 @@ QNetworkReply *APIManager::getCoupon(QString sort, int perPage, int page, QVaria
         }
     }
 
+    if (!fields.isEmpty()) {
+        query.addQueryItem("fields", fields.join(","));
+    }
+
     url.setQuery(query.query());
 
-    QNetworkRequest request(url);
-    setRawHeaders(&request);
+    QNetworkReply *reply = get(url);
 
-    QNetworkReply *reply = manager->get(request);
-    connectReplyToErrors(reply);
-
-    connect(reply, SIGNAL(finished()), this, SLOT(slotGetCouponFinished()));
+    connect(reply, SIGNAL(finished()), this, SLOT(slotGetCouponsFinished()));
 
     return reply;
 }
 
-void APIManager::slotGetCouponFinished()
+QNetworkReply *APIManager::getCouponDetail(QString id)
+{
+    if (id.isEmpty()) {
+        qDebug() << "ID is empty!";
+        return 0;
+    }
+
+    QUrl url = QUrl(_baseUrl+"/v1/coupon"+id);
+
+    QNetworkReply *reply = get(url);
+
+    connect(reply, SIGNAL(finished()), this, SLOT(slotGetCouponsFinished()));
+
+    return reply;
+}
+
+void APIManager::slotGetCouponsFinished()
 {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     if (!checkReplyIsError(reply) && reply->isFinished()) {
-        //qDebug() << "finished";
-        emit getCouponFinished(getJSONDocument(reply->readAll()), reply);
+        emit getCouponsFinished(getJSONDocument(reply->readAll()), reply);
+    }
+}
+
+void APIManager::slotGetCouponDetailFinished()
+{
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+    if (!checkReplyIsError(reply) && reply->isFinished()) {
+        emit getCouponDetailFinished(getJSONDocument(reply->readAll()), reply);
     }
 }
 

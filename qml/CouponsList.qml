@@ -45,11 +45,11 @@ Item {
             height: settings.spacing
         }
 
-//        footer: Item {
-//            id: listFooter
-//            width: parent.width
-//            height: utils.mm(10)
-//        }
+        //        footer: Item {
+        //            id: listFooter
+        //            width: parent.width
+        //            height: utils.mm(10)
+        //        }
 
         delegate: CouponsListDelegate {
             id: delegate
@@ -132,26 +132,26 @@ Item {
         }
     }
 
-//    BusyIndicator {
-//        id: fullReloadIndicator
-//        width: settings.busyIndicatorSize
-//        height: settings.busyIndicatorSize
-//        //Component.onCompleted: console.log(settings.busyIndicatorSize)
+    //    BusyIndicator {
+    //        id: fullReloadIndicator
+    //        width: settings.busyIndicatorSize
+    //        height: settings.busyIndicatorSize
+    //        //Component.onCompleted: console.log(settings.busyIndicatorSize)
 
-//        Behavior on y {
-//            NumberAnimation { duration: 400; easing.type: Easing.InOutBack }
-//            enabled: couponsContainer.couponsModel.count > 0 && !couponsList.draggingVertically &&
-//                     (couponsContainer.couponsModel.loadingStatus == CouponModel.RequestToReload || couponsContainer.couponsModel.loadingStatus == CouponModel.FullReloadProcessing)
-//        }
+    //        Behavior on y {
+    //            NumberAnimation { duration: 400; easing.type: Easing.InOutBack }
+    //            enabled: couponsContainer.couponsModel.count > 0 && !couponsList.draggingVertically &&
+    //                     (couponsContainer.couponsModel.loadingStatus == CouponModel.RequestToReload || couponsContainer.couponsModel.loadingStatus == CouponModel.FullReloadProcessing)
+    //        }
 
-//        y: couponsContainer.couponsModel.count > 0 && !couponsList.draggingVertically &&
-//           (couponsContainer.couponsModel.loadingStatus == CouponModel.RequestToReload || couponsContainer.couponsModel.loadingStatus == CouponModel.FullReloadProcessing)
-//           ? couponsList.y + height*0.5 : -couponsList.contentY - height*1.5
+    //        y: couponsContainer.couponsModel.count > 0 && !couponsList.draggingVertically &&
+    //           (couponsContainer.couponsModel.loadingStatus == CouponModel.RequestToReload || couponsContainer.couponsModel.loadingStatus == CouponModel.FullReloadProcessing)
+    //           ? couponsList.y + height*0.5 : -couponsList.contentY - height*1.5
 
-//        anchors {
-//            horizontalCenter: parent.horizontalCenter
-//        }
-//    }
+    //        anchors {
+    //            horizontalCenter: parent.horizontalCenter
+    //        }
+    //    }
 
     BusyIndicator {
         id: loadMoreIndicator

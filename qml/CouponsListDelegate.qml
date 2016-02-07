@@ -198,6 +198,38 @@ Item {
                     }
                 }
             }
+
+            Rectangle {
+                width: 1
+                height: parent.height
+                border.color: "grey"
+                color: "grey"
+            }
+
+            Item {
+                id: r4
+                height: serviceCol.height
+
+                Layout.fillWidth: true
+                Column {
+                    id: serviceCol
+                    anchors.centerIn: parent
+                    Text {
+                        id: serviceText
+                        text: qsTr("Service")
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        color: "white"
+                        font.pointSize: 10
+                    }
+                    Text {
+                        id: serviceLbl
+                        text: serviceName
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        color: "white"
+                        font.pointSize: 8
+                    }
+                }
+            }
         }
     }
 

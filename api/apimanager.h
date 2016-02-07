@@ -15,13 +15,22 @@ class APIManager : public QObject, public uSingleton<APIManager>
     Q_OBJECT
 public:
     explicit APIManager(QObject *parent = 0);
-    QNetworkReply *getCoupon(QString sort, int perPage = 20, int page = 1, QVariantMap filters = QVariantMap());
+
+    //api methods
+    QNetworkReply *getCoupons(QStringList sort, int perPage = 20, int page = 1, QVariantMap filters = QVariantMap(), QStringList fields = QStringList());
+    QNetworkReply *getCouponDetail(QString id);
 
 signals:
-    void getCouponFinished(QJsonDocument json, QNetworkReply *reply);
+    //api results signals
+    void getCouponsFinished(QJsonDocument json, QNetworkReply *reply);
+    void getCouponDetailFinished(QJsonDocument json, QNetworkReply *reply);
+
     void replyError(QNetworkReply *reply, QNetworkReply::NetworkError error, QString errorString);
 
 public slots:
+
+protected:
+    QNetworkReply *get(QUrl url);
 
 private:
     QNetworkAccessManager *manager;
@@ -36,7 +45,8 @@ private slots:
     void replyFinished(QNetworkReply *reply);
     void replyError(QNetworkReply::NetworkError error);
     void slotSslErrors(QList<QSslError> errors);
-    void slotGetCouponFinished();
+    void slotGetCouponsFinished();
+    void slotGetCouponDetailFinished();
 };
 
 #endif // APIMANAGER_H

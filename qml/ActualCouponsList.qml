@@ -9,7 +9,9 @@ CouponsList {
     couponsModel: CouponModel {
         id: coupons;
         filters: {'isArchive': '0'}
-        sort: "-id"
+        idField: 'id'
+        fields: ['id','title','sourceServiceId','imagesLinks','mainImageLink','pageLink','cityId','boughtCount','shortDescription','createTimestamp', 'serviceName']
+        sort: ['-id']
         perPage: 20
         Component.onCompleted: reload()
     }

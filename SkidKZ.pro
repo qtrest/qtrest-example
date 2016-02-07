@@ -7,13 +7,15 @@ CONFIG += c++11
 SOURCES += main.cpp \
     api/apimanager.cpp \
     api/models/couponmodel.cpp \
-    api/models/jsonrestlistmodel.cpp
+    api/models/jsonrestlistmodel.cpp \
+    api/models/baserestlistmodel.cpp
 
 HEADERS += \
     api/usingleton.h \
     api/apimanager.h \
     api/models/couponmodel.h \
-    api/models/jsonrestlistmodel.h
+    api/models/jsonrestlistmodel.h \
+    api/models/baserestlistmodel.h
 
 RESOURCES += qml/qml.qrc \
              assets/assets.qrc

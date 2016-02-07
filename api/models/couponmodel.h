@@ -13,8 +13,8 @@ public:
         qmlRegisterType<CouponModel>("ru.forsk.coupons", 1, 0, "CouponModel");
     }
 protected:
-    void fetchMoreData(const QModelIndex &parent);
-    QVariantMap processItem(QVariantMap item);
+    void fetchMoreImpl(const QModelIndex &parent);
+    QVariantMap preProcessItem(QVariantMap item);
 };
 
 #endif // COUPONMODEL_H
