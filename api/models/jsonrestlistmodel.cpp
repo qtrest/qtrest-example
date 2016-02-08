@@ -22,12 +22,11 @@ void JsonRestListModel::fetchMoreFinished()
         return;
     }
 
-    QJsonDocument json = getJSONDocument(reply->readAll());
-
     //TODO check is reply for me
 
     updateHeadersData(reply);
 
+    QJsonDocument json = getJSONDocument(reply->readAll());
     QJsonArray jsonArray = json.array();
 
     //prepare vars
@@ -83,6 +82,9 @@ void JsonRestListModel::fetchDetailFinished()
     updateItem(obj.toVariantMap());
 
     detailsModel()->setSourceModel(this);
+
+    //todo wtf?
+    setLoadingStatus(LoadingStatus::Idle);
 }
 
 QJsonDocument JsonRestListModel::getJSONDocument(QByteArray bytes)
