@@ -5,6 +5,7 @@ CouponsList {
     anchors.fill: parent
 
     property string titleText: qsTr("Actual")
+    property string type: "archive"
 
     couponsModel: CouponModel {
         id: coupons;

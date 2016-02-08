@@ -2,12 +2,17 @@
 
 CouponModel::CouponModel(QObject *parent) : JsonRestListModel(parent)
 {
-    connect(&apimanager,SIGNAL(getCouponsFinished(QJsonDocument, QNetworkReply *)), this, SLOT(fetchMoreFinished(QJsonDocument, QNetworkReply *)));
+
 }
 
-void CouponModel::fetchMoreImpl(const QModelIndex &parent)
+QNetworkReply *CouponModel::fetchMoreImpl(const QModelIndex &parent)
 {
-    currentReply = apimanager.getCoupons(sort(), perPage(), currentPage(), filters(), fields());
+    return api.getCoupons(sort(), perPage(), currentPage(), filters(), fields());
+}
+
+QNetworkReply *CouponModel::fetchDetailImpl(QString id)
+{
+    return api.getCouponDetail(id);
 }
 
 QVariantMap CouponModel::preProcessItem(QVariantMap item)

@@ -5,17 +5,21 @@ QT += quick
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    api/apimanager.cpp \
     api/models/couponmodel.cpp \
     api/models/jsonrestlistmodel.cpp \
-    api/models/baserestlistmodel.cpp
+    api/models/baserestlistmodel.cpp \
+    api/models/detailsmodel.cpp \
+    api/apibase.cpp \
+    api/api.cpp
 
 HEADERS += \
     api/usingleton.h \
-    api/apimanager.h \
     api/models/couponmodel.h \
     api/models/jsonrestlistmodel.h \
-    api/models/baserestlistmodel.h
+    api/models/baserestlistmodel.h \
+    api/models/detailsmodel.h \
+    api/apibase.h \
+    api/api.h
 
 RESOURCES += qml/qml.qrc \
              assets/assets.qrc

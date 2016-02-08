@@ -36,6 +36,7 @@ Item {
         model: couponsContainer.couponsModel
         visible: couponsContainer.couponsModel.count > 0
         maximumFlickVelocity: 5000
+        interactive: true
 
         ScrollIndicator.vertical: ScrollIndicator { }
 
@@ -76,9 +77,9 @@ Item {
                 return;
             }
             if (contentY < -200) {
-                couponsContainer.couponsModel.setLoadingStatus(CouponModel.RequestToReload)
+                couponsContainer.couponsModel.requestToReload()
             } else {
-                couponsContainer.couponsModel.setLoadingStatus(CouponModel.Idle)
+                couponsContainer.couponsModel.forceIdle()
             }
         }
 
@@ -100,7 +101,7 @@ Item {
         onClicked: {
             //couponsList.contentY = -settings.spacing
             couponsList.positionViewAtBeginning()
-            couponsModel.setLoadingStatus(CouponModel.Idle)
+            couponsModel.forceIdle()
         }
     }
 

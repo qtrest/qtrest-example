@@ -10,10 +10,12 @@ public:
     explicit CouponModel(QObject *parent = 0);
 
     static void declareQML() {
+        JsonRestListModel::declareQML();
         qmlRegisterType<CouponModel>("ru.forsk.coupons", 1, 0, "CouponModel");
     }
 protected:
-    void fetchMoreImpl(const QModelIndex &parent);
+    QNetworkReply *fetchMoreImpl(const QModelIndex &parent);
+    QNetworkReply *fetchDetailImpl(QString id);
     QVariantMap preProcessItem(QVariantMap item);
 };
 

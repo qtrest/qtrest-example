@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <mobile/adctl/adctl.h>
-#include "api/apimanager.h"
+#include "api/apibase.h"
 #include "api/models/couponmodel.h"
 #include <QtAwesomeAndroid.h>
 #include <QTranslator>

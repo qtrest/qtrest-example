@@ -3,6 +3,7 @@ import Qt.labs.controls 1.0
 import QtQuick.Layouts 1.3
 
 Item {
+    id: couponDelegate
     height: information.height
 
     property string detailSource: "qrc:/CouponDetail.qml"
@@ -238,7 +239,8 @@ Item {
         anchors.fill: parent
 
         onClicked: {
-            stackView.push(detailSource)
+            couponsModel.fetchDetail(id)
+            var details = stackView.push(detailSource, {detailsModel:couponsModel.detailsModel})
             drawer.close()
         }
     }

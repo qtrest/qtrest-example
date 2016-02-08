@@ -1,9 +1,18 @@
 #include "baserestlistmodel.h"
+#include "detailsmodel.h"
 
-BaseRestListModel::BaseRestListModel(QObject *parent) : QAbstractListModel(parent), m_sort("-id"), m_perPage(20), currentReply(NULL), m_currentPage(0), m_roleNamesIndex(0)
+BaseRestListModel::BaseRestListModel(QObject *parent) : QAbstractListModel(parent), m_sort("-id"),
+    m_perPage(20), m_currentPage(0), m_roleNamesIndex(0)
 {
+    api.setAccept(accept());
+    m_detailsModel = new DetailsModel();
     setLoadingStatus(LoadingStatus::Idle);
-    connect(&apimanager,SIGNAL(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)), this, SLOT(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)));
+    connect(&api,SIGNAL(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)), this, SLOT(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)));
+}
+
+void BaseRestListModel::declareQML()
+{
+    qRegisterMetaType<DetailsModel*>("DetailsModel*");
 }
 
 void BaseRestListModel::reload()
@@ -45,7 +54,31 @@ void BaseRestListModel::fetchMore(const QModelIndex &parent)
     int nextPage = currentPage()+1;
     setCurrentPage(nextPage);
 
-    fetchMoreImpl(parent);
+    QNetworkReply *reply = fetchMoreImpl(parent);
+    connect(reply, SIGNAL(finished()), this, SLOT(fetchMoreFinished()));
+}
+
+void BaseRestListModel::fetchDetail(QString id)
+{
+    m_fetchDetailId = id;
+    Item item = findItemById(id);
+    if (item.isUpdated()) {
+        return;
+    }
+
+    switch (loadingStatus()) {
+    case LoadingStatus::Idle:
+        setLoadingStatus(LoadingStatus::LoadDetailsProcessing);
+        break;
+    default:
+        return;
+        break;
+    }
+
+    m_detailsModel->invalidateModel();
+
+    QNetworkReply *reply = fetchDetailImpl(id);
+    connect(reply, SIGNAL(finished()), this, SLOT(fetchDetailFinished()));
 }
 
 void BaseRestListModel::replyError(QNetworkReply *reply, QNetworkReply::NetworkError error, QString errorString)
@@ -56,9 +89,29 @@ void BaseRestListModel::replyError(QNetworkReply *reply, QNetworkReply::NetworkE
     setLoadingStatus(LoadingStatus::Error);
 }
 
-Item BaseRestListModel::getItem(QVariantMap value)
+Item BaseRestListModel::createItem(QVariantMap value)
 {
-    return Item(preProcessItem(value));
+    return Item(preProcessItem(value),idField());
+}
+
+Item BaseRestListModel::findItemById(QString id)
+{
+    QListIterator<Item> i(m_items);
+    while (i.hasNext()) {
+        Item item = i.next();
+        if (item.id() == id) {
+            return item;
+        }
+    }
+}
+
+void BaseRestListModel::updateItem(QVariantMap value)
+{
+    Item item = findItemById(value.value(idField()).toString());
+    int row = m_items.indexOf(item);
+    item.update(value);
+    emit dataChanged(index(row),index(row));
+    qDebug() << 'detail updated' << row << item.id();
 }
 
 QVariant BaseRestListModel::data(const QModelIndex &index, int role) const
@@ -102,6 +155,10 @@ void BaseRestListModel::append(Item item)
 
 void BaseRestListModel::generateRoleNames()
 {
+    if (m_roleNamesIndex > 0) {
+        return;
+    }
+
     if (rowCount() > 0) {
         QStringList keys = m_items[0].keys();
 

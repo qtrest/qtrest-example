@@ -161,6 +161,30 @@ ApplicationWindow {
         initialItem: ActualCouponsList {
             anchors.fill: parent
         }
+
+        pushEnter: Transition {
+            XAnimator { from: root.width; to: 0; duration: 200; easing.type: Easing.OutCubic }
+        }
+
+        pushExit: Transition {
+            XAnimator { from: 0; to: -root.width; duration: 200; easing.type: Easing.OutCubic }
+        }
+
+        popEnter: Transition {
+            XAnimator { from: -root.width; to: 0; duration: 200; easing.type: Easing.OutCubic }
+        }
+
+        popExit: Transition {
+            XAnimator { from: 0; to: root.width; duration: 200; easing.type: Easing.OutCubic }
+        }
+
+        replaceEnter: Transition {
+            XAnimator { from: root.width; to: 0; duration: 200; easing.type: Easing.OutCubic }
+        }
+
+        replaceExit: Transition {
+            XAnimator { from: 0; to: -root.width; duration: 200; easing.type: Easing.OutCubic }
+        }
     }
 
     onClosing: {

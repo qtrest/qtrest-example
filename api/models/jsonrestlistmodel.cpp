@@ -2,19 +2,27 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QNetworkReply>
+#include "detailsmodel.h"
 
 JsonRestListModel::JsonRestListModel(QObject *parent) : BaseRestListModel(parent)
 {
-
+    setAccept("application/json");
 }
 
-void JsonRestListModel::fetchMoreFinished(QJsonDocument json, QNetworkReply *reply)
+void JsonRestListModel::fetchMoreFinished()
 {
-    qDebug() << "updateFinished";
+    qDebug() << "fetchMoreFinished";
+
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+    if (api.checkReplyIsError(reply) || !reply->isFinished()) {
+        return;
+    }
 
     if (this->loadingStatus() == LoadingStatus::Idle) {
         return;
     }
+
+    QJsonDocument json = getJSONDocument(reply->readAll());
 
     //TODO check is reply for me
 
@@ -40,7 +48,7 @@ void JsonRestListModel::fetchMoreFinished(QJsonDocument json, QNetworkReply *rep
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject obj = value.toObject();
 
-        Item item = getItem(obj.toVariantMap());
+        Item item = createItem(obj.toVariantMap());
 
         append(item);
     }
@@ -50,7 +58,43 @@ void JsonRestListModel::fetchMoreFinished(QJsonDocument json, QNetworkReply *rep
 
     endInsertRows();
 
+    detailsModel()->setSourceModel(this);
+
     setLoadingStatus(LoadingStatus::Idle);
 
     emit countChanged();
+}
+
+void JsonRestListModel::fetchDetailFinished()
+{
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+    if (api.checkReplyIsError(reply) || !reply->isFinished()) {
+        return;
+    }
+
+    if (this->loadingStatus() == LoadingStatus::Idle) {
+        return;
+    }
+
+    QJsonDocument json = getJSONDocument(reply->readAll());
+
+    QJsonObject obj = json.object();
+
+    updateItem(obj.toVariantMap());
+
+    detailsModel()->setSourceModel(this);
+}
+
+QJsonDocument JsonRestListModel::getJSONDocument(QByteArray bytes)
+{
+    QString str = QString::fromUtf8(bytes.data(), bytes.size());
+
+    QJsonParseError parseError;
+    QJsonDocument document = QJsonDocument::fromJson(bytes, &parseError);
+
+    if (parseError.error != QJsonParseError::NoError) {
+        qDebug() << parseError.errorString();
+    }
+
+    return document;
 }

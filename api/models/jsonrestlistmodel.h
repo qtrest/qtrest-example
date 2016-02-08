@@ -15,7 +15,11 @@ public:
     explicit JsonRestListModel(QObject *parent = 0);
 
 public slots:
-    void fetchMoreFinished(QJsonDocument json, QNetworkReply *reply);
+    void fetchMoreFinished();
+    void fetchDetailFinished();
+
+private:
+    QJsonDocument getJSONDocument(QByteArray bytes);
 };
 
 #endif // RESTLISTMODEL_H
