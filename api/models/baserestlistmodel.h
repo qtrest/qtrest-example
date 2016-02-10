@@ -3,6 +3,7 @@
 
 #include "api/api.h"
 #include <QAbstractListModel>
+#include <QtQml>
 
 class QNetworkReply;
 class DetailsModel;
@@ -83,12 +84,13 @@ public:
     Q_PROPERTY(LoadingStatus loadingStatus READ loadingStatus WRITE setLoadingStatus NOTIFY loadingStatusChanged)
     Q_PROPERTY(QString loadingErrorString READ loadingErrorString WRITE setLoadingErrorString NOTIFY loadingErrorStringChanged)
     Q_PROPERTY(QNetworkReply::NetworkError loadingErrorCode READ loadingErrorCode WRITE setLoadingErrorCode NOTIFY loadingErrorCodeChanged)
-
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
 
     Q_ENUMS(LoadingStatus)
 
     enum LoadingStatus {
         Idle,
+        IdleDetails,
         RequestToReload,
         FullReloadProcessing,
         LoadMoreProcessing,
@@ -98,9 +100,7 @@ public:
 
     static void declareQML();
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
-    int count() const;
 
     QStringList sort() const
     {
@@ -179,6 +179,11 @@ public:
         return api.accept();
     }
 
+    int count() const
+    {
+        return m_items.count();
+    }
+
 signals:
     void countChanged();
     void sortChanged(QStringList sort);
@@ -200,6 +205,7 @@ public slots:
     void reload();
     void fetchDetail(QString id);
     void replyError(QNetworkReply *reply, QNetworkReply::NetworkError error, QString errorString);
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
     void requestToReload() {
         setLoadingStatus(LoadingStatus::RequestToReload);
@@ -259,6 +265,12 @@ protected:
     virtual QVariantMap preProcessItem(QVariantMap item) = 0;
     virtual QNetworkReply *fetchDetailImpl(QString id) = 0;
 
+    //for get list
+    virtual QVariantList getVariantList(QByteArray bytes) = 0;
+
+    //for get details for one element
+    virtual QVariantMap getVariantMap(QByteArray bytes) = 0;
+
     void updateHeadersData(QNetworkReply *reply);
     void clearForReload();
     void append(Item item);
@@ -272,8 +284,8 @@ protected:
     QHash<int, QByteArray> roleNames() const;
 
 protected slots:
-    virtual void fetchMoreFinished() = 0;
-    virtual void fetchDetailFinished() = 0;
+    void fetchMoreFinished();
+    void fetchDetailFinished();
 
     void setLoadingStatus(LoadingStatus loadingStatus)
     {

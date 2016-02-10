@@ -107,8 +107,8 @@ Item {
 
     BusyIndicator {
         id: emptyIndicator
-        width: settings.busyIndicatorSize*2
-        height: settings.busyIndicatorSize*2
+        width: settings.busyIndicatorSize*1.5
+        height: settings.busyIndicatorSize*1.5
 
         running: couponsContainer.couponsModel.count == 0 && (couponsContainer.couponsModel.loadingStatus != CouponModel.Idle || couponsContainer.couponsModel.loadingStatus != CouponModel.Error)
         visible: opacity > 0

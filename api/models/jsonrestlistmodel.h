@@ -1,8 +1,5 @@
-#ifndef RESTLISTMODEL_H
-#define RESTLISTMODEL_H
-
-#include <QJsonDocument>
-#include <QtQml>
+#ifndef JSONRESTLISTMODEL_H
+#define JSONRESTLISTMODEL_H
 
 #include "baserestlistmodel.h"
 
@@ -14,12 +11,12 @@ class JsonRestListModel : public BaseRestListModel
 public:
     explicit JsonRestListModel(QObject *parent = 0);
 
-public slots:
-    void fetchMoreFinished();
-    void fetchDetailFinished();
-
 private:
-    QJsonDocument getJSONDocument(QByteArray bytes);
+    //for get list
+    QVariantList getVariantList(QByteArray bytes);
+
+    //for get details for one element
+    QVariantMap getVariantMap(QByteArray bytes);
 };
 
-#endif // RESTLISTMODEL_H
+#endif // JSONRESTLISTMODEL_H

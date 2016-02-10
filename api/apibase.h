@@ -3,8 +3,6 @@
 
 #include <QObject>
 #include <QNetworkReply>
-#include "usingleton.h"
-#include <QJsonDocument>
 
 class QNetworkAccessManager;
 class QNetworkReply;

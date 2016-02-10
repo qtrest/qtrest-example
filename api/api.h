@@ -2,6 +2,8 @@
 #define API_H
 
 #include "apibase.h"
+#include "usingleton.h"
+#include <QtQml>
 
 #define api API::instance()
 

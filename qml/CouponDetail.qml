@@ -26,7 +26,9 @@ Item {
             id: delegate
             width: couponsList.width - settings.spacing;
             anchors.horizontalCenter: parent.horizontalCenter
+
+            //Component.onCompleted: { console.log(imagesLinks) }
         }
-        Component.onCompleted: { console.log("details count", detailsModel.rowCount()) }
+        //Component.onCompleted: { console.log("details count", detailsModel.rowCount()) }
     }
 }

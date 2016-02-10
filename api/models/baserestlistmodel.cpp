@@ -36,8 +36,6 @@ void BaseRestListModel::fetchMore(const QModelIndex &parent)
 {
     Q_UNUSED(parent)
 
-    qDebug() << "fetchMore";
-
     switch (loadingStatus()) {
     case LoadingStatus::RequestToReload:
         setCurrentPage(0);
@@ -51,11 +49,74 @@ void BaseRestListModel::fetchMore(const QModelIndex &parent)
         break;
     }
 
+    qDebug() << "fetchMore";
+
     int nextPage = currentPage()+1;
     setCurrentPage(nextPage);
 
     QNetworkReply *reply = fetchMoreImpl(parent);
     connect(reply, SIGNAL(finished()), this, SLOT(fetchMoreFinished()));
+}
+
+void BaseRestListModel::fetchMoreFinished()
+{
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+    if (api.checkReplyIsError(reply) || !reply->isFinished()) {
+        return;
+    }
+
+    if (this->loadingStatus() == LoadingStatus::Idle) {
+        return;
+    }
+
+    qDebug() << "fetchMoreFinished";
+
+    //TODO check is reply for me
+
+    updateHeadersData(reply);
+
+    QVariantList values = getVariantList(reply->readAll());
+
+    //prepare vars
+    int insertFrom = rowCount();
+    int insertCount = rowCount()+values.count()-1;
+
+    //check if we need to full reload
+    if (this->loadingStatus() == LoadingStatus::FullReloadProcessing) {
+        clearForReload();
+        insertFrom = rowCount();
+        insertCount = values.count()-1;
+    }
+
+    //check for assertion or empty data
+    if (insertCount < insertFrom) { insertCount = insertFrom; }
+
+    if (insertCount == 0) {
+        setLoadingStatus(LoadingStatus::Error);
+        emit countChanged();
+        qDebug() << "Nothing to insert! Please check your parser!" << count() << loadingStatus();
+        return;
+    }
+
+    //append rows to model
+    beginInsertRows(this->index(rowCount(), 0), insertFrom, insertCount);
+
+    QListIterator<QVariant> i(values);
+    while (i.hasNext()) {
+        Item item = createItem(i.next().toMap());
+        append(item);
+    }
+
+    //get all role names
+    generateRoleNames();
+
+    endInsertRows();
+
+    detailsModel()->setSourceModel(this);
+
+    setLoadingStatus(LoadingStatus::Idle);
+
+    emit countChanged();
 }
 
 void BaseRestListModel::fetchDetail(QString id)
@@ -79,6 +140,27 @@ void BaseRestListModel::fetchDetail(QString id)
 
     QNetworkReply *reply = fetchDetailImpl(id);
     connect(reply, SIGNAL(finished()), this, SLOT(fetchDetailFinished()));
+}
+
+void BaseRestListModel::fetchDetailFinished()
+{
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+    if (api.checkReplyIsError(reply) || !reply->isFinished()) {
+        return;
+    }
+
+    if (this->loadingStatus() == LoadingStatus::Idle) {
+        return;
+    }
+
+    QVariantMap item = getVariantMap(reply->readAll());
+
+    updateItem(item);
+
+    detailsModel()->setSourceModel(this);
+
+    //todo wtf?
+    setLoadingStatus(LoadingStatus::IdleDetails);
 }
 
 void BaseRestListModel::replyError(QNetworkReply *reply, QNetworkReply::NetworkError error, QString errorString)
@@ -111,7 +193,7 @@ void BaseRestListModel::updateItem(QVariantMap value)
     int row = m_items.indexOf(item);
     item.update(value);
     emit dataChanged(index(row),index(row));
-    qDebug() << 'detail updated' << row << item.id();
+    //qDebug() << 'detail updated' << row << item.id();
 }
 
 QVariant BaseRestListModel::data(const QModelIndex &index, int role) const
@@ -174,5 +256,3 @@ int BaseRestListModel::rowCount(const QModelIndex &parent) const
     Q_UNUSED(parent);
     return m_items.count();
 }
-
-int BaseRestListModel::count() const { return m_items.count(); }

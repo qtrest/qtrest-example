@@ -10,7 +10,8 @@ SOURCES += main.cpp \
     api/models/baserestlistmodel.cpp \
     api/models/detailsmodel.cpp \
     api/apibase.cpp \
-    api/api.cpp
+    api/api.cpp \
+    api/models/xmlrestlistmodel.cpp
 
 HEADERS += \
     api/usingleton.h \
@@ -19,7 +20,8 @@ HEADERS += \
     api/models/baserestlistmodel.h \
     api/models/detailsmodel.h \
     api/apibase.h \
-    api/api.h
+    api/api.h \
+    api/models/xmlrestlistmodel.h
 
 RESOURCES += qml/qml.qrc \
              assets/assets.qrc
