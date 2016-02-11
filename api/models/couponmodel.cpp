@@ -7,12 +7,12 @@ CouponModel::CouponModel(QObject *parent) : JsonRestListModel(parent)
 
 QNetworkReply *CouponModel::fetchMoreImpl(const QModelIndex &parent)
 {
-    return api.getCoupons(sort(), perPage(), currentPage(), filters(), fields());
+    return restapi.getCoupons(sort(), perPage(), currentPage(), filters(), fields());
 }
 
 QNetworkReply *CouponModel::fetchDetailImpl(QString id)
 {
-    return api.getCouponDetail(id);
+    return restapi.getCouponDetail(id);
 }
 
 QVariantMap CouponModel::preProcessItem(QVariantMap item)

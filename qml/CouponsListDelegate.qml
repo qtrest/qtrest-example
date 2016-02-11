@@ -80,10 +80,11 @@ Item {
             font.pointSize: 16
             color: "white"
             wrapMode: Text.WordWrap
-            width: parent.width
+            width: parent.width-settings.spacing
             clip: true
             maximumLineCount: 2
             horizontalAlignment: Text.AlignHCenter
+            anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Text {
@@ -93,10 +94,11 @@ Item {
             font.pointSize: 10
             color: "white"
             wrapMode: Text.WordWrap
-            width: parent.width
+            width: parent.width-settings.spacing
             clip: true
             maximumLineCount: 4
             horizontalAlignment: Text.AlignHCenter
+            anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Rectangle {

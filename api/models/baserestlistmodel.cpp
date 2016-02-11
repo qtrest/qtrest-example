@@ -2,12 +2,13 @@
 #include "detailsmodel.h"
 
 BaseRestListModel::BaseRestListModel(QObject *parent) : QAbstractListModel(parent), m_sort("-id"),
-    m_perPage(20), m_currentPage(0), m_roleNamesIndex(0)
+    m_perPage(20), m_currentPage(0), m_roleNamesIndex(0),
+    m_canFetchMorePolicy(CanFetchMorePolicy::ByPageCountHeader), m_loadingStatus(LoadingStatus::Idle),
+    m_currentPageHeader("X-Pagination-Current-Page"), m_totalCountHeader("X-Pagination-Total-Count"), m_pageCountHeader("X-Pagination-Page-Count")
 {
-    api.setAccept(accept());
+    restapi.setAccept(accept());
     m_detailsModel = new DetailsModel();
-    setLoadingStatus(LoadingStatus::Idle);
-    connect(&api,SIGNAL(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)), this, SLOT(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)));
+    connect(&restapi,SIGNAL(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)), this, SLOT(replyError(QNetworkReply *, QNetworkReply::NetworkError, QString)));
 }
 
 void BaseRestListModel::declareQML()
@@ -25,9 +26,28 @@ bool BaseRestListModel::canFetchMore(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
 
-    if (currentPage() < totalCount()) {
+    switch(canFetchMorePolicy()) {
+    case ByPageCountHeader:
+        if (currentPage() < pageCount()) {
+            return true;
+        } else {
+            return false;
+        }
+        break;
+    case ByTotalCountHeader:
+        if (rowCount() < totalCount()) {
+            return true;
+        } else {
+            return false;
+        }
+        break;
+    case Infinity:
         return true;
-    } else {
+        break;
+    case Manual:
+        qDebug() << "You must redefine canFetchMore function for use Manual policy";
+        break;
+    default:
         return false;
     }
 }
@@ -61,7 +81,7 @@ void BaseRestListModel::fetchMore(const QModelIndex &parent)
 void BaseRestListModel::fetchMoreFinished()
 {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-    if (api.checkReplyIsError(reply) || !reply->isFinished()) {
+    if (restapi.checkReplyIsError(reply) || !reply->isFinished()) {
         return;
     }
 
@@ -145,7 +165,7 @@ void BaseRestListModel::fetchDetail(QString id)
 void BaseRestListModel::fetchDetailFinished()
 {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-    if (api.checkReplyIsError(reply) || !reply->isFinished()) {
+    if (restapi.checkReplyIsError(reply) || !reply->isFinished()) {
         return;
     }
 
@@ -215,9 +235,16 @@ QHash<int, QByteArray> BaseRestListModel::roleNames() const
 void BaseRestListModel::updateHeadersData(QNetworkReply *reply)
 {
     //update headers data
-    this->setCurrentPage(reply->rawHeader("X-Pagination-Current-Page").toInt());
-    this->setTotalCount(reply->rawHeader("X-Pagination-Total-Count").toInt());
-    this->setPageCount(reply->rawHeader("X-Pagination-Page-Count").toInt());
+    QByteArray currentPage;
+    currentPage.append(currentPageHeader());
+    QByteArray totalCount;
+    totalCount.append(totalCountHeader());
+    QByteArray pageCount;
+    pageCount.append(pageCountHeader());
+
+    this->setCurrentPage(reply->rawHeader(currentPage).toInt());
+    this->setTotalCount(reply->rawHeader(totalCount).toInt());
+    this->setPageCount(reply->rawHeader(pageCount).toInt());
     reply->deleteLater();
 }
 

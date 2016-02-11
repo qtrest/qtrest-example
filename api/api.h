@@ -5,7 +5,7 @@
 #include "usingleton.h"
 #include <QtQml>
 
-#define api API::instance()
+#define restapi API::instance()
 
 class API : public APIBase, public uSingleton<API>
 {

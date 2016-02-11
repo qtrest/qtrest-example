@@ -58,14 +58,20 @@ public:
     //Standard HATEOAS REST API params (https://en.wikipedia.org/wiki/HATEOAS, for example: https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/rest-quick-start.md)
     //Specify sorting fields
     Q_PROPERTY(QStringList sort READ sort WRITE setSort NOTIFY sortChanged)
-    //Specify perPage count (X-Pagination-Per-Page)
+    //Specify perPage count
     Q_PROPERTY(int perPage READ perPage WRITE setPerPage NOTIFY perPageChanged)
-    //Read only incremental X-Pagination-Current-Page, increment by call fetchMore (X-Pagination-Page-Count)
+    //Read only incremental currentPage
     Q_PROPERTY(int currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
+    //Specify current page header. Default is incremental X-Pagination-Current-Page, increment by call fetchMore (X-Pagination-Page-Count)
+    Q_PROPERTY(QString currentPageHeader READ currentPageHeader WRITE setCurrentPageHeader NOTIFY currentPageHeaderChanged)
     //Read only max total records count from X-Pagination-Total-Count
     Q_PROPERTY(int totalCount READ totalCount WRITE setTotalCount NOTIFY totalCountChanged)
+    //Max total records count. Default is X-Pagination-Total-Count
+    Q_PROPERTY(QString totalCountHeader READ totalCountHeader WRITE setTotalCountHeader NOTIFY totalCountHeaderChanged)
     //Read only max page count from X-Pagination-Page-Count
     Q_PROPERTY(int pageCount READ pageCount WRITE setPageCount NOTIFY pageCountChanged)
+    //Max page count. Default X-Pagination-Page-Count
+    Q_PROPERTY(QString pageCountHeader READ pageCountHeader WRITE setPageCountHeader NOTIFY pageCountHeaderChanged)
     //Specify filters parametres
     Q_PROPERTY(QVariantMap filters READ filters WRITE setFilters NOTIFY filtersChanged)
     //Specify fields parameter
@@ -80,14 +86,17 @@ public:
     Q_PROPERTY(QString fetchDetailId READ fetchDetailId)
     Q_PROPERTY(DetailsModel *detailsModel READ detailsModel)
 
+
     //load status and result code
     Q_PROPERTY(LoadingStatus loadingStatus READ loadingStatus WRITE setLoadingStatus NOTIFY loadingStatusChanged)
     Q_PROPERTY(QString loadingErrorString READ loadingErrorString WRITE setLoadingErrorString NOTIFY loadingErrorStringChanged)
     Q_PROPERTY(QNetworkReply::NetworkError loadingErrorCode READ loadingErrorCode WRITE setLoadingErrorCode NOTIFY loadingErrorCodeChanged)
     Q_PROPERTY(int count READ count NOTIFY countChanged)
+    Q_PROPERTY(CanFetchMorePolicy canFetchMorePolicy READ canFetchMorePolicy WRITE setCanFetchMorePolicy NOTIFY canFetchMorePolicyChanged)
 
     Q_ENUMS(LoadingStatus)
 
+    //current status of model
     enum LoadingStatus {
         Idle,
         IdleDetails,
@@ -96,6 +105,16 @@ public:
         LoadMoreProcessing,
         LoadDetailsProcessing,
         Error
+    };
+
+    Q_ENUMS(CanFetchMorePolicy)
+
+    //policy for manage max elements for ListView. Default is 'ByPageCountHeader'
+    enum CanFetchMorePolicy {
+        ByPageCountHeader,
+        ByTotalCountHeader,
+        Infinity,
+        Manual
     };
 
     static void declareQML();
@@ -176,12 +195,31 @@ public:
 
     QByteArray accept() const
     {
-        return api.accept();
+        return restapi.accept();
     }
 
     int count() const
     {
         return m_items.count();
+    }
+    QString pageCountHeader() const
+    {
+        return m_pageCountHeader;
+    }
+
+    QString totalCountHeader() const
+    {
+        return m_totalCountHeader;
+    }
+
+    QString currentPageHeader() const
+    {
+        return m_currentPageHeader;
+    }
+
+    CanFetchMorePolicy canFetchMorePolicy() const
+    {
+        return m_canFetchMorePolicy;
     }
 
 signals:
@@ -198,6 +236,10 @@ signals:
     void fieldsChanged(QStringList fields);
     void idFieldChanged(QString idField);
     void acceptChanged(QByteArray accept);
+    void pageCountHeaderChanged(QString pageCountHeader);
+    void totalCountHeaderChanged(QString totalCountHeader);
+    void currentPageHeaderChanged(QString currentPageHeader);
+    void canFetchMorePolicyChanged(CanFetchMorePolicy canFetchMorePolicy);
 
 public slots:
     bool canFetchMore(const QModelIndex &parent) const;
@@ -258,6 +300,42 @@ public slots:
 
         m_idField = idField;
         emit idFieldChanged(idField);
+    }
+
+    void setPageCountHeader(QString pageCountHeader)
+    {
+        if (m_pageCountHeader == pageCountHeader)
+            return;
+
+        m_pageCountHeader = pageCountHeader;
+        emit pageCountHeaderChanged(pageCountHeader);
+    }
+
+    void setTotalCountHeader(QString totalCountHeader)
+    {
+        if (m_totalCountHeader == totalCountHeader)
+            return;
+
+        m_totalCountHeader = totalCountHeader;
+        emit totalCountHeaderChanged(totalCountHeader);
+    }
+
+    void setCurrentPageHeader(QString currentPageHeader)
+    {
+        if (m_currentPageHeader == currentPageHeader)
+            return;
+
+        m_currentPageHeader = currentPageHeader;
+        emit currentPageHeaderChanged(currentPageHeader);
+    }
+
+    void setCanFetchMorePolicy(CanFetchMorePolicy canFetchMorePolicy)
+    {
+        if (m_canFetchMorePolicy == canFetchMorePolicy)
+            return;
+
+        m_canFetchMorePolicy = canFetchMorePolicy;
+        emit canFetchMorePolicyChanged(canFetchMorePolicy);
     }
 
 protected:
@@ -325,7 +403,7 @@ protected slots:
 
     void setAccept(QString accept)
     {
-        api.setAccept(accept);
+        restapi.setAccept(accept);
     }
 
     void setLoadingErrorString(QString loadingErrorString)
@@ -365,6 +443,10 @@ private:
     QNetworkReply::NetworkError m_loadingErrorCode;
     QString m_fetchDetailId;
     DetailsModel *m_detailsModel;
+    QString m_pageCountHeader;
+    QString m_totalCountHeader;
+    QString m_currentPageHeader;
+    CanFetchMorePolicy m_canFetchMorePolicy;
 };
 
 #endif // BASERESTLISTMODEL_H
