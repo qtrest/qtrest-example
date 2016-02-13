@@ -2,10 +2,9 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
-APIBase::APIBase(QObject *parent) : QObject(parent)
+APIBase::APIBase(QObject *parent) : QObject(parent), m_authTokenHeader("Authorization"), m_acceptHeader("Accept")
 {
     manager = new QNetworkAccessManager(this);
-    _baseUrl = "http://api.skid.kz";
 
     connect(manager, SIGNAL(finished(QNetworkReply *)),
             this, SLOT(replyFinished(QNetworkReply *)));
@@ -31,7 +30,8 @@ void APIBase::slotSslErrors(QList<QSslError> errors)
 
 void APIBase::setRawHeaders(QNetworkRequest *request)
 {
-    request->setRawHeader("Accept", accept());
+    request->setRawHeader(acceptHeader(), accept());
+    request->setRawHeader(authTokenHeader(), authToken());
 }
 
 void APIBase::connectReplyToErrors(QNetworkReply *reply)

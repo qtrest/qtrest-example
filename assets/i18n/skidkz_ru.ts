@@ -34,9 +34,27 @@
     </message>
 </context>
 <context>
+    <name>CouponModel</name>
+    <message>
+        <location filename="../../api/models/couponmodel.cpp" line="33"/>
+        <source>Undefined Type</source>
+        <translation>Скидка неизвестна</translation>
+    </message>
+    <message>
+        <location filename="../../api/models/couponmodel.cpp" line="35"/>
+        <source>Coupon: %1. Discount: %2%</source>
+        <translation>Купон: %1. Скидка: %2%</translation>
+    </message>
+    <message>
+        <location filename="../../api/models/couponmodel.cpp" line="37"/>
+        <source>Cost: %1. Certificate: %2. Discount: %3%</source>
+        <translation>Цена: %1. Сертификат: %2. Скидка: %3%</translation>
+    </message>
+</context>
+<context>
     <name>CouponsList</name>
     <message>
-        <location filename="../../qml/CouponsList.qml" line="126"/>
+        <location filename="../../qml/CouponsList.qml" line="127"/>
         <source>List is empty</source>
         <translation>Список пуст</translation>
     </message>
@@ -44,19 +62,24 @@
 <context>
     <name>CouponsListDelegate</name>
     <message>
-        <location filename="../../qml/CouponsListDelegate.qml" line="123"/>
+        <location filename="../../qml/CouponsListDelegate.qml" line="142"/>
         <source>Bought</source>
         <translation>Купили</translation>
     </message>
     <message>
-        <location filename="../../qml/CouponsListDelegate.qml" line="155"/>
+        <location filename="../../qml/CouponsListDelegate.qml" line="174"/>
         <source>City</source>
         <translation>Город</translation>
     </message>
     <message>
-        <location filename="../../qml/CouponsListDelegate.qml" line="187"/>
+        <location filename="../../qml/CouponsListDelegate.qml" line="206"/>
         <source>Date</source>
         <translation>Добавлено</translation>
+    </message>
+    <message>
+        <location filename="../../qml/CouponsListDelegate.qml" line="238"/>
+        <source>Service</source>
+        <translation>Сервис</translation>
     </message>
 </context>
 <context>

@@ -11,7 +11,8 @@ CouponsList {
         id: coupons;
         filters: {'isArchive': '0'}
         idField: 'id'
-        fields: ['id','title','sourceServiceId','imagesLinks','mainImageLink','pageLink','cityId','boughtCount','shortDescription','createTimestamp', 'serviceName']
+        fields: ['id','title','sourceServiceId','imagesLinks','mainImageLink','pageLink','cityId','boughtCount','shortDescription',
+            'createTimestamp', 'serviceName', 'discountType', 'originalCouponPrice', 'originalPrice', 'discountPercent', 'discountPrice']
         sort: ['-id']
         perPage: 20
         Component.onCompleted: reload()

@@ -62,4 +62,5 @@ DISTFILES += \
     qml/controls/Button.qml \
     qml/controls/Loader.qml \
     qml/controls/Text.qml \
-    qml/controls/Variables.qml
+    qml/controls/Variables.qml \
+    QtMicroRestFramework.qmodel

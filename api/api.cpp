@@ -5,13 +5,14 @@
 
 API::API() : APIBase(0), uSingleton<API>(*this)
 {
-
+    setBaseUrl("http://api.skid.kz");
+    setAuthToken("Bearer 8aef452ee3b32466209535b96d456b06");
 }
 
 QNetworkReply *API::getCoupons(QStringList sort, int perPage, int page, QVariantMap filters, QStringList fields)
 {
     //URL and GET parameters
-    QUrl url = QUrl(_baseUrl+"/v1/coupon");
+    QUrl url = QUrl(baseUrl()+"/v1/coupon");
     QUrlQuery query;
 
     if (!sort.isEmpty()) {
@@ -47,7 +48,7 @@ QNetworkReply *API::getCouponDetail(QString id)
         return 0;
     }
 
-    QUrl url = QUrl(_baseUrl+"/v1/coupon/"+id);
+    QUrl url = QUrl(baseUrl()+"/v1/coupon/"+id);
 
     QNetworkReply *reply = get(url);
 

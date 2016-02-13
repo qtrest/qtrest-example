@@ -43,31 +43,47 @@ Item {
                 visible: image.status == Image.Error || image.status == Image.Null
             }
 
-            Image {
-                id: image
-                width: parent.width
-                height: parent.height
-                source: mainImageLink
-                fillMode: Image.PreserveAspectCrop
-                clip: true
+            Item {
+                anchors.fill: parent
+                Image {
+                    id: image
+                    width: parent.width
+                    height: parent.height
+                    source: mainImageLink
+                    fillMode: Image.PreserveAspectCrop
+                    clip: true
+                }
+
+                Item {
+                    width: parent.width
+                    height: discountText.height*1.1
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color:"black"
+                        opacity: 0.3
+                    }
+
+                    Text {
+                        id: discountText
+                        text: discountString
+                        font.bold: true
+                        font.pointSize: 14
+                        color: "white"
+                        wrapMode: Text.WordWrap
+                        width: parent.width-settings.spacing
+                        clip: true
+                        maximumLineCount: 2
+                        horizontalAlignment: Text.AlignHCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                }
             }
-
-            //            BusyIndicator {
-            //                width: settings.busyIndicatorSize
-            //                height: settings.busyIndicatorSize
-
-            //                running: image.status === Image.Loading
-            //                visible: image.status != Image.Ready
-            //                anchors.centerIn: parent
-            //            }
 
             ProgressBar {
                 id: progressBar
-
                 indeterminate: true
-
                 visible: image.status != Image.Ready
-
                 width: parent.width / 2
                 anchors.centerIn: parent
             }

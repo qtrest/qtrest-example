@@ -52,8 +52,6 @@ class BaseRestListModel : public QAbstractListModel
 public:
     BaseRestListModel(QObject *parent = 0);
 
-    Q_PROPERTY(int count READ count NOTIFY countChanged)
-
     //--------------------
     //Standard HATEOAS REST API params (https://en.wikipedia.org/wiki/HATEOAS, for example: https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/rest-quick-start.md)
     //Specify sorting fields
@@ -78,14 +76,12 @@ public:
     Q_PROPERTY(QStringList fields READ fields WRITE setFields NOTIFY fieldsChanged)
     //Specify Accept header for application/json or application/xml
     Q_PROPERTY(QByteArray accept READ accept WRITE setAccept NOTIFY acceptChanged)
-    //--------------------
 
     //identify column name, role, last fetched detail and detailModel
     Q_PROPERTY(QString idField READ idField WRITE setIdField NOTIFY idFieldChanged)
     Q_PROPERTY(int idFieldRole READ idFieldRole)
     Q_PROPERTY(QString fetchDetailId READ fetchDetailId)
     Q_PROPERTY(DetailsModel *detailsModel READ detailsModel)
-
 
     //load status and result code
     Q_PROPERTY(LoadingStatus loadingStatus READ loadingStatus WRITE setLoadingStatus NOTIFY loadingStatusChanged)
