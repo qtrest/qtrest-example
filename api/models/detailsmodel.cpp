@@ -26,3 +26,10 @@ bool DetailsModel::filterAcceptsRow(int source_row, const QModelIndex &source_pa
 
     return ret;
 }
+
+QHash<int, QByteArray> DetailsModel::roleNames() const
+{
+    BaseRestListModel *sourceModel = static_cast<BaseRestListModel *> (this->sourceModel());
+    qDebug() << sourceModel->detailsRoleNames();
+    return sourceModel->detailsRoleNames();
+}

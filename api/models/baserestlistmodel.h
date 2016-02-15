@@ -49,6 +49,7 @@ private:
 class BaseRestListModel : public QAbstractListModel
 {
     Q_OBJECT
+    friend DetailsModel;
 public:
     BaseRestListModel(QObject *parent = 0);
 
@@ -349,6 +350,7 @@ protected:
     void clearForReload();
     void append(Item item);
     void generateRoleNames();
+    void generateDetailsRoleNames(QVariantMap item);
     Item findItemById(QString id);
 
     //TODO fabric method to each items
@@ -356,6 +358,7 @@ protected:
     void updateItem(QVariantMap value);
 
     QHash<int, QByteArray> roleNames() const;
+    QHash<int, QByteArray> detailsRoleNames() const;
 
 protected slots:
     void fetchMoreFinished();
@@ -424,6 +427,10 @@ private:
 
     QHash<int, QByteArray> m_roleNames;
     int m_roleNamesIndex;
+
+    QHash<int, QByteArray> m_detailsRoleNames;
+    int m_detailsRoleNamesIndex;
+
     QList<Item> m_items;
     QStringList m_fields;
     QString m_idField;

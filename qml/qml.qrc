@@ -9,5 +9,6 @@
         <file>ActualCouponsList.qml</file>
         <file>ArchiveCouponsList.qml</file>
         <file>CouponDetail.qml</file>
+        <file>CouponsDetailDelegate.qml</file>
     </qresource>
 </RCC>

@@ -36,6 +36,7 @@ lupdate_only {
     $$PWD/qml/includes/*.qml \
     $$PWD/qml/models/*.qml
 }
+
 TRANSLATIONS += assets/i18n/skidkz_ru.ts
 
 # Default rules for deployment.

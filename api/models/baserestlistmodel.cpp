@@ -2,7 +2,7 @@
 #include "detailsmodel.h"
 
 BaseRestListModel::BaseRestListModel(QObject *parent) : QAbstractListModel(parent), m_sort("-id"),
-    m_perPage(20), m_currentPage(0), m_roleNamesIndex(0),
+    m_perPage(20), m_currentPage(0), m_roleNamesIndex(0), m_detailsRoleNamesIndex(0),
     m_canFetchMorePolicy(CanFetchMorePolicy::ByPageCountHeader), m_loadingStatus(LoadingStatus::Idle),
     m_currentPageHeader("X-Pagination-Current-Page"), m_totalCountHeader("X-Pagination-Total-Count"), m_pageCountHeader("X-Pagination-Page-Count")
 {
@@ -141,6 +141,7 @@ void BaseRestListModel::fetchMoreFinished()
 
 void BaseRestListModel::fetchDetail(QString id)
 {
+    qDebug() << "fetchDetail";
     m_fetchDetailId = id;
     Item item = findItemById(id);
     if (item.isUpdated()) {
@@ -164,6 +165,7 @@ void BaseRestListModel::fetchDetail(QString id)
 
 void BaseRestListModel::fetchDetailFinished()
 {
+    qDebug() << "fetchDetailFinished";
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     if (restapi.checkReplyIsError(reply) || !reply->isFinished()) {
         return;
@@ -177,9 +179,10 @@ void BaseRestListModel::fetchDetailFinished()
 
     updateItem(item);
 
+    generateDetailsRoleNames(item);
+
     detailsModel()->setSourceModel(this);
 
-    //todo wtf?
     setLoadingStatus(LoadingStatus::IdleDetails);
 }
 
@@ -209,7 +212,8 @@ Item BaseRestListModel::findItemById(QString id)
 
 void BaseRestListModel::updateItem(QVariantMap value)
 {
-    Item item = findItemById(value.value(idField()).toString());
+    //qDebug() << value;
+    Item item = findItemById(fetchDetailId());
     int row = m_items.indexOf(item);
     item.update(value);
     emit dataChanged(index(row),index(row));
@@ -230,6 +234,11 @@ QVariant BaseRestListModel::data(const QModelIndex &index, int role) const
 QHash<int, QByteArray> BaseRestListModel::roleNames() const
 {
     return m_roleNames;
+}
+
+QHash<int, QByteArray> BaseRestListModel::detailsRoleNames() const
+{
+    return m_detailsRoleNames;
 }
 
 void BaseRestListModel::updateHeadersData(QNetworkReply *reply)
@@ -268,12 +277,40 @@ void BaseRestListModel::generateRoleNames()
         return;
     }
 
-    if (rowCount() > 0) {
-        QStringList keys = m_items[0].keys();
+    Item item = m_items[0];
 
+    QStringList keys = item.keys();
+
+    if (rowCount() > 0) {
         foreach (QString key, keys) {
-            m_roleNamesIndex++;
-            m_roleNames[m_roleNamesIndex] = QByteArray().append(key);
+            QByteArray k;
+            k.append(key);
+            if (!m_roleNames.key(k)) {
+                m_roleNamesIndex++;
+                m_roleNames[m_roleNamesIndex] = k;
+            }
+        }
+    }
+}
+
+void BaseRestListModel::generateDetailsRoleNames(QVariantMap item)
+{
+    //qDebug() << item;
+    if (m_detailsRoleNamesIndex > 0) {
+        return;
+    }
+
+    QStringList keys = item.keys();
+
+    if (rowCount() > 0) {
+        foreach (QString key, keys) {
+            QByteArray k;
+            k.append(key);
+            if (!m_detailsRoleNames.key(k)) {
+                m_detailsRoleNamesIndex++;
+                m_detailsRoleNames[m_detailsRoleNamesIndex] = k;
+                qDebug() << key;
+            }
         }
     }
 }
