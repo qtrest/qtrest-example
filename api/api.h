@@ -14,7 +14,7 @@ public:
     API();
 
     //api methods
-    QNetworkReply *getCoupons(QStringList sort, int perPage = 20, int page = 1, QVariantMap filters = QVariantMap(), QStringList fields = QStringList());
+    QNetworkReply *getCoupons(QStringList sort, Pagination *pagination, QVariantMap filters = QVariantMap(), QStringList fields = QStringList());
     QNetworkReply *getCouponDetail(QString id);
 };
 

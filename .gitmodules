@@ -4,3 +4,6 @@
 [submodule "3rd/awesome"]
 	path = 3rd/awesome
 	url = git@github.com:gamecreature/QtAwesome.git
+[submodule "api/qtrest"]
+	path = api/qtrest
+	url = git@github.com:kafeg/qtrest.git

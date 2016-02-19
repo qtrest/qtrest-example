@@ -9,7 +9,7 @@ API::API() : APIBase(0), uSingleton<API>(*this)
     setAuthToken("Bearer 8aef452ee3b32466209535b96d456b06");
 }
 
-QNetworkReply *API::getCoupons(QStringList sort, int perPage, int page, QVariantMap filters, QStringList fields)
+QNetworkReply *API::getCoupons(QStringList sort, Pagination *pagination, QVariantMap filters, QStringList fields)
 {
     //URL and GET parameters
     QUrl url = QUrl(baseUrl()+"/v1/coupon");
@@ -19,8 +19,18 @@ QNetworkReply *API::getCoupons(QStringList sort, int perPage, int page, QVariant
         query.addQueryItem("sort", sort.join(","));
     }
 
-    query.addQueryItem("per-page", QString::number(perPage));
-    query.addQueryItem("page", QString::number(page));
+    switch(pagination->policy()) {
+    case Pagination::PageNumber:
+        query.addQueryItem("per-page", QString::number(pagination->perPage()));
+        query.addQueryItem("page", QString::number(pagination->currentPage()));
+        break;
+    case Pagination::None:
+    case Pagination::LimitOffset:
+    case Pagination::Cursor:
+    case Pagination::Manual:
+    default:
+        break;
+    }
 
     if (!filters.isEmpty()) {
         QMapIterator<QString, QVariant> i(filters);

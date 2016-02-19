@@ -7,7 +7,7 @@ CouponModel::CouponModel(QObject *parent) : JsonRestListModel(parent)
 
 QNetworkReply *CouponModel::fetchMoreImpl(const QModelIndex &parent)
 {
-    return restapi.getCoupons(sort(), perPage(), currentPage(), filters(), fields());
+    return restapi.getCoupons(sort(), pagination(), filters(), fields());
 }
 
 QNetworkReply *CouponModel::fetchDetailImpl(QString id)
