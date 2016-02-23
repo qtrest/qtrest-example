@@ -6,7 +6,6 @@ CouponsList {
     anchors.fill: parent
 
     property string titleText: qsTr("Actual")
-    property string type: "actual"
 
     couponsModel: CouponModel {
         id: coupons;
@@ -19,6 +18,9 @@ CouponsList {
         pagination {
             policy: Pagination.PageNumber
             perPage: 20
+            currentPageHeader: "X-Pagination-Current-Page"
+            totalCountHeader: "X-Pagination-Total-Count"
+            pageCountHeader: "X-Pagination-Page-Count"
         }
 
         Component.onCompleted: { console.log(pagination.perPage); reload(); }

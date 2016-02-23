@@ -4,7 +4,6 @@ Item {
     anchors.fill: parent
 
     property string titleText: qsTr("Statistics")
-    property string type: "statistics"
 
     Text {
         id: statistics

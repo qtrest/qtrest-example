@@ -258,7 +258,7 @@ Item {
 
         onClicked: {
             couponsModel.fetchDetail(id)
-            stackView.push(detailSource, {detailsModel:couponsModel.detailsModel})
+            stackView.push(detailSource, {detailsModel: couponsModel.detailsModel, couponsModel: couponsModel})
             drawer.close()
         }
     }

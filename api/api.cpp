@@ -27,7 +27,6 @@ QNetworkReply *API::getCoupons(QStringList sort, Pagination *pagination, QVarian
     case Pagination::None:
     case Pagination::LimitOffset:
     case Pagination::Cursor:
-    case Pagination::Manual:
     default:
         break;
     }

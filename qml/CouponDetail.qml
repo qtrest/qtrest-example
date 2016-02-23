@@ -1,13 +1,15 @@
 import QtQuick 2.6
+import Qt.labs.controls 1.0
+import ru.forsk.coupons 1.0
 
 Item {
     id: details
     anchors.fill: parent
 
     property string titleText: qsTr("Detail")
-    property string type: "couponDetail"
 
     property var detailsModel
+    property var couponsModel
 
     Loader {
         id: pageLoader
@@ -16,6 +18,20 @@ Item {
     MouseArea {
         anchors.fill: parent
         onClicked: pageLoader.sourceComponent = detailComponent
+    }
+
+    BusyIndicator {
+        id: loadingIndicator
+        width: settings.busyIndicatorSize*1.5
+        height: settings.busyIndicatorSize*1.5
+
+        running: couponsModel.loadingStatus == CouponModel.LoadDetailsProcessing
+        visible: opacity > 0
+        opacity: couponsModel.loadingStatus == CouponModel.LoadDetailsProcessing ? 1 : 0
+        anchors.centerIn: parent
+        Behavior on opacity {
+            NumberAnimation { duration: 400; }
+        }
     }
 
     Component {
