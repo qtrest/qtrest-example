@@ -5,32 +5,43 @@
 
 SkidKZApi::SkidKZApi() : APIBase(0), uSingleton<SkidKZApi>(*this)
 {
+    //Base URL used for all API calls for this example
     setBaseUrl("http://api.skid.kz");
+
+    //You may specify auth token for each API call. And you may write your own api method for authetification
     setAuthToken("Bearer 8aef452ee3b32466209535b96d456b06");
 }
 
+//In this methods we get list of objects, based on specified page number, filters, sort and fileds list.
+//We can fetch all fields or only needed in our list.
 QNetworkReply *SkidKZApi::getCoupons(QStringList sort, Pagination *pagination, QVariantMap filters, QStringList fields)
 {
     //URL and GET parameters
     QUrl url = QUrl(baseUrl()+"/v1/coupon");
     QUrlQuery query;
 
+    //Specify filters GET param
     if (!sort.isEmpty()) {
         query.addQueryItem("sort", sort.join(","));
     }
 
+    //Specify pagination. We use pagination type from model.
     switch(pagination->policy()) {
     case Pagination::PageNumber:
         query.addQueryItem("per-page", QString::number(pagination->perPage()));
         query.addQueryItem("page", QString::number(pagination->currentPage()));
         break;
     case Pagination::None:
+    case Pagination::Infinity:
     case Pagination::LimitOffset:
     case Pagination::Cursor:
     default:
         break;
     }
 
+    //if we need to filter our model, we use filters.
+    //Be careful, if you use this methods, your curent pagintaion wil be broken
+    //and you must full reaload your model data when you specify new filters
     if (!filters.isEmpty()) {
         QMapIterator<QString, QVariant> i(filters);
         while (i.hasNext()) {
@@ -39,6 +50,7 @@ QNetworkReply *SkidKZApi::getCoupons(QStringList sort, Pagination *pagination, Q
         }
     }
 
+    //We may to get all or spicified fields in this method.
     if (!fields.isEmpty()) {
         query.addQueryItem("fields", fields.join(","));
     }
@@ -50,6 +62,8 @@ QNetworkReply *SkidKZApi::getCoupons(QStringList sort, Pagination *pagination, Q
     return reply;
 }
 
+//If we fetch e.g. 3 of 10 fields in our 'getCoupons' methods,
+//we may to get full information from needed item by it ID
 QNetworkReply *SkidKZApi::getCouponDetail(QString id)
 {
     if (id.isEmpty()) {

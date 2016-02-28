@@ -16,20 +16,7 @@ ApplicationWindow {
     width: 480
     height: 800
 
-    //    width: 360
-    //    height: 520
-
     title: qsTr("Skid.KZ")
-
-
-    //           [Controls]
-    //           Style=Material
-
-    //           [Material]
-    //           Primary=BlueGrey
-    //           Accent=BlueGrey
-    //           Theme=Dark
-
 
     Settings {
         id: settings
@@ -39,8 +26,6 @@ ApplicationWindow {
         property int topPadding: utils.mm(2)
         property int busyIndicatorSize: 40
     }
-
-    //Component.onCompleted: console.log(settings.spacing, settings.bottomPadding, settings.topPadding, settings.busyIndicatorSize )
 
     header: ToolBar {
         RowLayout {
