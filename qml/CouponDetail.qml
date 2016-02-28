@@ -11,6 +11,14 @@ Item {
     property var detailsModel
     property var couponsModel
 
+    property var loadingStatus: couponsModel.loadingStatus
+
+    onLoadingStatusChanged: {
+        if (loadingStatus == CouponModel.IdleDetails) {
+            pageLoader.sourceComponent = detailComponent
+        }
+    }
+
     Loader {
         id: pageLoader
     }
@@ -25,9 +33,9 @@ Item {
         width: settings.busyIndicatorSize*1.5
         height: settings.busyIndicatorSize*1.5
 
-        running: couponsModel.loadingStatus == CouponModel.LoadDetailsProcessing
+        running: loadingStatus == CouponModel.LoadDetailsProcessing
         visible: opacity > 0
-        opacity: couponsModel.loadingStatus == CouponModel.LoadDetailsProcessing ? 1 : 0
+        opacity: loadingStatus == CouponModel.LoadDetailsProcessing ? 1 : 0
         anchors.centerIn: parent
         Behavior on opacity {
             NumberAnimation { duration: 400; }

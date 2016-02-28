@@ -6,11 +6,11 @@ CONFIG += c++11
 
 SOURCES += main.cpp \
     api/models/couponmodel.cpp \
-    api/api.cpp
+    api/skidkzapi.cpp
 
 HEADERS += \
     api/models/couponmodel.h \
-    api/api.h
+    api/skidkzapi.h
 
 include (api/qtrest/qtrest.pri)
 

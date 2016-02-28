@@ -5,16 +5,16 @@
 #include "usingleton.h"
 #include <QtQml>
 
-#define restapi API::instance()
-
-class API : public APIBase, public uSingleton<API>
+class SkidKZApi : public APIBase, public uSingleton<SkidKZApi>
 {
     Q_OBJECT
 public:
-    API();
+    SkidKZApi();
 
     //api methods
+    //get list of objects
     QNetworkReply *getCoupons(QStringList sort, Pagination *pagination, QVariantMap filters = QVariantMap(), QStringList fields = QStringList());
+    //get full data for specified item
     QNetworkReply *getCouponDetail(QString id);
 };
 

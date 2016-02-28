@@ -5,14 +5,19 @@ CouponModel::CouponModel(QObject *parent) : JsonRestListModel(parent)
 
 }
 
+APIBase *CouponModel::apiInstance()
+{
+    return &SkidKZApi::instance();
+}
+
 QNetworkReply *CouponModel::fetchMoreImpl(const QModelIndex &parent)
 {
-    return restapi.getCoupons(sort(), pagination(), filters(), fields());
+    return SkidKZApi::instance().getCoupons(sort(), pagination(), filters(), fields());
 }
 
 QNetworkReply *CouponModel::fetchDetailImpl(QString id)
 {
-    return restapi.getCouponDetail(id);
+    return SkidKZApi::instance().getCouponDetail(id);
 }
 
 QVariantMap CouponModel::preProcessItem(QVariantMap item)
@@ -41,3 +46,4 @@ QVariantMap CouponModel::preProcessItem(QVariantMap item)
 
     return item;
 }
+

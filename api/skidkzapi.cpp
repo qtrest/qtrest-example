@@ -1,15 +1,15 @@
-#include "api.h"
+#include "skidkzapi.h"
 #include <QFile>
 #include <QTextStream>
 #include <QUrlQuery>
 
-API::API() : APIBase(0), uSingleton<API>(*this)
+SkidKZApi::SkidKZApi() : APIBase(0), uSingleton<SkidKZApi>(*this)
 {
     setBaseUrl("http://api.skid.kz");
     setAuthToken("Bearer 8aef452ee3b32466209535b96d456b06");
 }
 
-QNetworkReply *API::getCoupons(QStringList sort, Pagination *pagination, QVariantMap filters, QStringList fields)
+QNetworkReply *SkidKZApi::getCoupons(QStringList sort, Pagination *pagination, QVariantMap filters, QStringList fields)
 {
     //URL and GET parameters
     QUrl url = QUrl(baseUrl()+"/v1/coupon");
@@ -50,7 +50,7 @@ QNetworkReply *API::getCoupons(QStringList sort, Pagination *pagination, QVarian
     return reply;
 }
 
-QNetworkReply *API::getCouponDetail(QString id)
+QNetworkReply *SkidKZApi::getCouponDetail(QString id)
 {
     if (id.isEmpty()) {
         qDebug() << "ID is empty!";

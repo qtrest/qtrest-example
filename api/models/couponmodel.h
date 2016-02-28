@@ -2,6 +2,7 @@
 #define COUPONMODEL_H
 
 #include "jsonrestlistmodel.h"
+#include "api/skidkzapi.h"
 
 class CouponModel : public JsonRestListModel
 {
@@ -17,6 +18,8 @@ protected:
     QNetworkReply *fetchMoreImpl(const QModelIndex &parent);
     QNetworkReply *fetchDetailImpl(QString id);
     QVariantMap preProcessItem(QVariantMap item);
+
+    APIBase *apiInstance();
 };
 
 #endif // COUPONMODEL_H
