@@ -5,7 +5,7 @@ In this example application you will found example C++ and QML code for working 
 
 I will use it's REST API, who folows HATEOAS (https://github.com/yiisoft/yii2/blob/master/docs/guide/rest-quick-start.md):
 - GET /coupons: list all coupons page by page;
-- GET /coupons/123: return the details of the user 123.
+- GET /coupons/1: return the details of the coupon 1.
 
 ## Testing
 
