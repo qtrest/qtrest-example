@@ -34,7 +34,7 @@ TRANSLATIONS += assets/i18n/skidkz_ru.ts
 include(deployment.pri)
 
 #Font Awesome
-include(3rd/awesome/QtAwesome/QtAwesome.pri)
+include(3rd/QtAwesome/QtAwesome/QtAwesome.pri)
 
 #AdCtl: Google Analytics, AdMob, StartAD.mobi
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/mobile/android

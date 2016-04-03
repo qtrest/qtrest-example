@@ -1,9 +1,3 @@
-[submodule "mobile/adctl"]
-	path = mobile/adctl
-	url = git@github.com:kafeg/adctl.git
-[submodule "3rd/awesome"]
-	path = 3rd/awesome
-	url = git@github.com:gamecreature/QtAwesome.git
-[submodule "api/qtrest"]
-	path = api/qtrest
-	url = git@github.com:kafeg/qtrest.git
+[submodule "3rd/QtAwesome"]
+	path = 3rd/QtAwesome
+	url = https://github.com/kafeg/QtAwesome.git
