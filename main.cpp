@@ -1,8 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <mobile/adctl/adctl.h>
 #include "api/models/couponmodel.h"
-#include <QtAwesomeAndroid.h>
+#include "QtAwesomeAndroid.h"
 #include <QTranslator>
 #include <QSettings>
 
@@ -29,9 +28,6 @@ int main(int argc, char *argv[])
     }
     app.installTranslator(&qtTranslator);
 
-    //AdCtl
-    AdCtl::declareQML();
-
     //Font Awesome
     QtAwesomeAndroid* awesome = new QtAwesomeAndroid( qApp );
     awesome->setDefaultOption( "color", QColor(255,255,255) );
@@ -45,6 +41,7 @@ int main(int argc, char *argv[])
     qputenv("QT_LABS_CONTROLS_STYLE", settings.value("style").toByteArray());
 
     QQmlApplicationEngine engine;
+    QPM_INIT(engine)
     engine.rootContext()->setContextProperty("awesome", awesome);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 

@@ -1,7 +1,7 @@
 import QtQuick 2.6
 import Qt.labs.controls 1.0
 import QtQuick.Layouts 1.3
-import ru.forsk.coupons 1.0
+import com.github.qtrestexample.coupons 1.0
 
 Item {
     id: couponsContainer

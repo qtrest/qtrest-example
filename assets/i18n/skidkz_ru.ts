@@ -12,7 +12,7 @@
 <context>
     <name>ActualCouponsList</name>
     <message>
-        <location filename="../../qml/ActualCouponsList.qml" line="7"/>
+        <location filename="../../qml/ActualCouponsList.qml" line="8"/>
         <source>Actual</source>
         <translation>Актуальные</translation>
     </message>
@@ -28,7 +28,7 @@
 <context>
     <name>CouponDetail</name>
     <message>
-        <location filename="../../qml/CouponDetail.qml" line="6"/>
+        <location filename="../../qml/CouponDetail.qml" line="9"/>
         <source>Detail</source>
         <translation>Подробности</translation>
     </message>
@@ -36,19 +36,52 @@
 <context>
     <name>CouponModel</name>
     <message>
-        <location filename="../../api/models/couponmodel.cpp" line="33"/>
+        <location filename="../../api/models/couponmodel.cpp" line="38"/>
         <source>Undefined Type</source>
         <translation>Скидка неизвестна</translation>
     </message>
     <message>
-        <location filename="../../api/models/couponmodel.cpp" line="35"/>
+        <location filename="../../api/models/couponmodel.cpp" line="40"/>
         <source>Coupon: %1. Discount: %2%</source>
         <translation>Купон: %1. Скидка: %2%</translation>
     </message>
     <message>
-        <location filename="../../api/models/couponmodel.cpp" line="37"/>
+        <location filename="../../api/models/couponmodel.cpp" line="42"/>
         <source>Cost: %1. Certificate: %2. Discount: %3%</source>
         <translation>Цена: %1. Сертификат: %2. Скидка: %3%</translation>
+    </message>
+</context>
+<context>
+    <name>CouponsDetailDelegate</name>
+    <message>
+        <location filename="../../qml/CouponsDetailDelegate.qml" line="145"/>
+        <source>Bought</source>
+        <translation type="unfinished">Купили</translation>
+    </message>
+    <message>
+        <location filename="../../qml/CouponsDetailDelegate.qml" line="177"/>
+        <source>City</source>
+        <translation type="unfinished">Город</translation>
+    </message>
+    <message>
+        <location filename="../../qml/CouponsDetailDelegate.qml" line="209"/>
+        <source>Date</source>
+        <translation type="unfinished">Добавлено</translation>
+    </message>
+    <message>
+        <location filename="../../qml/CouponsDetailDelegate.qml" line="241"/>
+        <source>Service</source>
+        <translation type="unfinished">Сервис</translation>
+    </message>
+    <message>
+        <location filename="../../qml/CouponsDetailDelegate.qml" line="271"/>
+        <source>Buy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/CouponsDetailDelegate.qml" line="293"/>
+        <source>Full description</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -93,27 +126,27 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../../qml/main.qml" line="22"/>
+        <location filename="../../qml/main.qml" line="19"/>
         <source>Skid.KZ</source>
         <translation>Skid.KZ</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="145"/>
+        <location filename="../../qml/main.qml" line="130"/>
         <source>Actual</source>
         <translation>Актуальные</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="146"/>
+        <location filename="../../qml/main.qml" line="131"/>
         <source>Archive</source>
         <translation>Архив</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="147"/>
+        <location filename="../../qml/main.qml" line="132"/>
         <source>Statistics</source>
         <translation>Статистика</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="148"/>
+        <location filename="../../qml/main.qml" line="133"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>

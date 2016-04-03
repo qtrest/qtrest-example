@@ -12,7 +12,7 @@ public:
 
     static void declareQML() {
         JsonRestListModel::declareQML();
-        qmlRegisterType<CouponModel>("ru.forsk.coupons", 1, 0, "CouponModel");
+        qmlRegisterType<CouponModel>("com.github.qtrestexample.coupons", 1, 0, "CouponModel");
     }
 protected:
     QNetworkReply *fetchMoreImpl(const QModelIndex &parent);

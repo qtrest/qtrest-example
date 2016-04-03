@@ -8,7 +8,6 @@ import Qt.labs.controls.universal 1.0
 import Qt.labs.settings 1.0
 
 import "includes" as I
-import ru.forsk.adctl 1.0
 
 ApplicationWindow {
     id: root
@@ -61,33 +60,6 @@ ApplicationWindow {
                 width: menuBtn.width
                 height: width
             }
-        }
-    }
-
-    AdCtl {
-        id: adCtl
-
-        //manage enabled components
-        adMobBannerEnabled: false
-        adMobIinterstitialEnabled: false
-        gAnalyticsEnabled: true
-
-        //set ids
-        adMobBannerId: "ca-app-pub-7212327600726803/5192183680"
-        gAnalyticsId: "UA-67543404-5"
-
-        //Start positions for banners.
-        adMobBannerPosition: Qt.point(0,-500)
-
-        onAdMobBannerShowed: {
-            adMobBannerPosition = Qt.point((root.width - adCtl.adMobBannerWidth) * 0.5,
-                                           (root.height - adCtl.adMobBannerHeight))
-            adCtl.showAdMobBanner()
-        }
-
-        //When all variables are setted, we can to initialize our code
-        Component.onCompleted: {
-            adCtl.init()
         }
     }
 

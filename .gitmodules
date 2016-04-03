@@ -1,3 +1,4 @@
 [submodule "3rd/QtAwesome"]
 	path = 3rd/QtAwesome
 	url = https://github.com/kafeg/QtAwesome.git
+

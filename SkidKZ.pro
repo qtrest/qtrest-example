@@ -1,6 +1,7 @@
 TEMPLATE = app
 
 QT += quick
+QT += widgets
 
 CONFIG += c++11
 
@@ -11,8 +12,6 @@ SOURCES += main.cpp \
 HEADERS += \
     api/models/couponmodel.h \
     api/skidkzapi.h
-
-include (api/qtrest/qtrest.pri)
 
 RESOURCES += qml/qml.qrc \
              assets/assets.qrc
@@ -36,9 +35,9 @@ include(deployment.pri)
 #Font Awesome
 include(3rd/QtAwesome/QtAwesome/QtAwesome.pri)
 
-#AdCtl: Google Analytics, AdMob, StartAD.mobi
+#AdCtl: Google Analytics, AdMob, StartAD.mobi, Qt-REST
+include(vendor/vendor.pri)
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/mobile/android
-include(mobile/adctl/AdCtl.pri)
 android {
   OTHER_FILES += $$PWD/mobile/android/AndroidManifest.xml
 }
