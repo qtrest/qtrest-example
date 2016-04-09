@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru_RU">
+<TS version="2.0" language="ru_RU">
 <context>
     <name>About</name>
     <message>
@@ -126,27 +126,27 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../../qml/main.qml" line="19"/>
+        <location filename="../../qml/main.qml" line="18"/>
         <source>Skid.KZ</source>
         <translation>Skid.KZ</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="130"/>
+        <location filename="../../qml/main.qml" line="102"/>
         <source>Actual</source>
         <translation>Актуальные</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="131"/>
+        <location filename="../../qml/main.qml" line="103"/>
         <source>Archive</source>
         <translation>Архив</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="132"/>
+        <location filename="../../qml/main.qml" line="104"/>
         <source>Statistics</source>
         <translation>Статистика</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="133"/>
+        <location filename="../../qml/main.qml" line="105"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
