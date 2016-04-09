@@ -7,6 +7,20 @@ I will use it's REST API, who folows HATEOAS (https://github.com/yiisoft/yii2/bl
 - GET /coupons: list all coupons page by page;
 - GET /coupons/1: return the details of the coupon 1.
 
+## Building
+
+```
+1. Install qpm from http://qpm.io
+2. git clone https://github.com/kafeg/qtrest-example.git
+3. cd qtrest-example
+4. qpm install
+5. lrelease qtrest-example.pro
+6. git submodule init
+7. git submodule update
+8. qmake
+9. make
+```
+
 ## Testing
 
 You may for example test this API by using those headers:
