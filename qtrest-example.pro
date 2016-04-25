@@ -5,6 +5,7 @@ QT += widgets
 
 CONFIG += c++11
 
+
 SOURCES += main.cpp \
     api/models/couponmodel.cpp \
     api/skidkzapi.cpp

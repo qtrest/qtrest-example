@@ -5,6 +5,8 @@
 #include <QTranslator>
 #include <QSettings>
 
+#include "jsonrestlistmodel.h"
+
 int main(int argc, char *argv[])
 {
     QGuiApplication::setApplicationName("Skid.KZ");
@@ -33,8 +35,10 @@ int main(int argc, char *argv[])
     awesome->setDefaultOption( "color", QColor(255,255,255) );
     awesome->initFontAwesome();
 
-    //models
+    //api and models
+    SkidKZApi::declareQML();
     CouponModel::declareQML();
+    JsonRestListModel::declareQML();
 
     //settings
     QSettings settings;

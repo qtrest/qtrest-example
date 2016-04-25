@@ -3,13 +3,20 @@
 #include <QTextStream>
 #include <QUrlQuery>
 
-SkidKZApi::SkidKZApi() : APIBase(0), uSingleton<SkidKZApi>(*this)
+SkidKZApi::SkidKZApi() : APIBase(0)
 {
-    //Base URL used for all API calls for this example
-    setBaseUrl("http://api.skid.kz");
 
-    //You may specify auth token for each API call. And you may write your own api method for authetification
-    setAuthToken("Bearer 8aef452ee3b32466209535b96d456b06");
+}
+
+QNetworkReply *SkidKZApi::handleRequest(QString path, QStringList sort, Pagination *pagination,
+                                  QVariantMap filters, QStringList fields, QString id)
+{
+    if (path == "/v1/coupon") {
+        return getCoupons(sort, pagination, filters, fields);
+    }
+    else if ("/v1/coupon/{id}") {
+        return getCouponDetail(id);
+    }
 }
 
 //In this methods we get list of objects, based on specified page number, filters, sort and fileds list.
@@ -20,7 +27,7 @@ QNetworkReply *SkidKZApi::getCoupons(QStringList sort, Pagination *pagination, Q
     QUrl url = QUrl(baseUrl()+"/v1/coupon");
     QUrlQuery query;
 
-    //Specify filters GET param
+    //Specify sort GET param
     if (!sort.isEmpty()) {
         query.addQueryItem("sort", sort.join(","));
     }

@@ -1,4 +1,4 @@
-import QtQuick 2.6
+import QtQuick 2.5
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.3
 
@@ -6,6 +6,11 @@ import Qt.labs.controls 1.0
 import Qt.labs.controls.material 1.0
 import Qt.labs.controls.universal 1.0
 import Qt.labs.settings 1.0
+
+import com.github.qtrestexample.skidkzapi 1.0
+import com.github.qtrest.jsonrestlistmodel 1.0
+import com.github.qtrest.pagination 1.0
+import com.github.qtrest.requests 1.0
 
 import "includes" as I
 
@@ -16,6 +21,46 @@ ApplicationWindow {
     height: 800
 
     title: qsTr("Skid.KZ")
+
+    SkidKZApi {
+        id: skidKZApi
+
+        baseUrl: "http://api.skid.kz"
+
+        authTokenHeader: "Authorization"
+        authToken: "Bearer 8aef452ee3b32466209535b96d456b06"
+
+        Component.onCompleted: console.log("completed!");
+    }
+
+    JsonRestListModel {
+        id: jsonCouponsModel
+        api: skidKZApi
+
+        idField: 'id'
+
+        requests {
+            get: "/v1/coupon"
+            getDetails: "/v1/coupon/{id}"
+        }
+
+        filters: {'isArchive': '0'}
+        fields: ['id','title','sourceServiceId','imagesLinks','mainImageLink',
+                 'pageLink','cityId','boughtCount','shortDescription',
+                 'createTimestamp', 'serviceName', 'discountType', 'originalCouponPrice',
+                 'originalPrice', 'discountPercent', 'discountPrice']
+        sort: ['-id']
+
+        pagination {
+            policy: Pagination.PageNumber
+            perPage: 20
+            currentPageHeader: "X-Pagination-Current-Page"
+            totalCountHeader: "X-Pagination-Total-Count"
+            pageCountHeader: "X-Pagination-Page-Count"
+        }
+
+        Component.onCompleted: { console.log(pagination.perPage); reload(); }
+    }
 
     Settings {
         id: settings

@@ -1,5 +1,6 @@
 import QtQuick 2.6
-import ru.forsk.coupons 1.0
+import com.github.qtrest.pagination 1.0
+import com.github.qtrestexample.coupons 1.0
 
 CouponsList {
     anchors.fill: parent
@@ -8,11 +9,22 @@ CouponsList {
 
     couponsModel: CouponModel {
         id: coupons;
+        api: skidKZApi
+
         filters: {'isArchive': '1'}
         idField: 'id'
-        fields: ['id','title','sourceServiceId','imagesLinks','mainImageLink','pageLink','cityId','boughtCount','shortDescription','createTimestamp', 'serviceName']
+        fields: ['id','title','sourceServiceId','imagesLinks','mainImageLink','pageLink','cityId',
+                 'boughtCount','shortDescription','createTimestamp', 'serviceName']
         sort: ['-id']
-        perPage: 20
+
+        pagination {
+            policy: Pagination.PageNumber
+            perPage: 20
+            currentPageHeader: "X-Pagination-Current-Page"
+            totalCountHeader: "X-Pagination-Total-Count"
+            pageCountHeader: "X-Pagination-Page-Count"
+        }
+
         Component.onCompleted: reload()
     }
 }

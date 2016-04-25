@@ -1,23 +1,20 @@
 #include "couponmodel.h"
 
-CouponModel::CouponModel(QObject *parent) : JsonRestListModel(parent)
+CouponModel::CouponModel(QObject *parent) : AbstractJsonRestListModel(parent)
 {
 
-}
-
-APIBase *CouponModel::apiInstance()
-{
-    return &SkidKZApi::instance();
 }
 
 QNetworkReply *CouponModel::fetchMoreImpl(const QModelIndex &parent)
 {
-    return SkidKZApi::instance().getCoupons(sort(), pagination(), filters(), fields());
+    Q_UNUSED(parent)
+
+    return static_cast<SkidKZApi *>(apiInstance())->getCoupons(sort(), pagination(), filters(), fields());
 }
 
 QNetworkReply *CouponModel::fetchDetailImpl(QString id)
 {
-    return SkidKZApi::instance().getCouponDetail(id);
+    return static_cast<SkidKZApi *>(apiInstance())->getCouponDetail(id);
 }
 
 QVariantMap CouponModel::preProcessItem(QVariantMap item)

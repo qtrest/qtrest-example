@@ -1,6 +1,6 @@
 import QtQuick 2.6
-import com.github.qtrestexample.coupons 1.0
 import com.github.qtrest.pagination 1.0
+import com.github.qtrestexample.coupons 1.0
 
 CouponsList {
     anchors.fill: parent
@@ -9,6 +9,8 @@ CouponsList {
 
     couponsModel: CouponModel {
         id: coupons;
+        api: skidKZApi
+
         filters: {'isArchive': '0'}
         idField: 'id'
         fields: ['id','title','sourceServiceId','imagesLinks','mainImageLink','pageLink','cityId','boughtCount','shortDescription',
