@@ -23,6 +23,8 @@ public:
                               QVariantMap filters = QVariantMap(), QStringList fields = QStringList());
     //get full data for specified item
     QNetworkReply *getCouponDetail(QString id);
+
+    QNetworkReply *getCategories(QStringList sort, Pagination *pagination);
 };
 
 #endif // SKIDKZAPI_H

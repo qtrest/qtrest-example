@@ -14,8 +14,11 @@ QNetworkReply *SkidKZApi::handleRequest(QString path, QStringList sort, Paginati
     if (path == "/v1/coupon") {
         return getCoupons(sort, pagination, filters, fields);
     }
-    else if ("/v1/coupon/{id}") {
+    else if (path == "/v1/coupon/{id}") {
         return getCouponDetail(id);
+    }
+    else if (path == "/v1/categories") {
+        return getCategories(sort, pagination);
     }
 }
 
@@ -49,6 +52,7 @@ QNetworkReply *SkidKZApi::getCoupons(QStringList sort, Pagination *pagination, Q
     //if we need to filter our model, we use filters.
     //Be careful, if you use this methods, your curent pagintaion wil be broken
     //and you must full reaload your model data when you specify new filters
+
     if (!filters.isEmpty()) {
         QMapIterator<QString, QVariant> i(filters);
         while (i.hasNext()) {
@@ -79,6 +83,38 @@ QNetworkReply *SkidKZApi::getCouponDetail(QString id)
     }
 
     QUrl url = QUrl(baseUrl()+"/v1/coupon/"+id);
+
+    QNetworkReply *reply = get(url);
+
+    return reply;
+}
+
+QNetworkReply *SkidKZApi::getCategories(QStringList sort, Pagination *pagination)
+{
+    //URL and GET parameters
+    QUrl url = QUrl(baseUrl()+"/v1/categories");
+    QUrlQuery query;
+
+    //Specify sort GET param
+    if (!sort.isEmpty()) {
+        query.addQueryItem("sort", sort.join(","));
+    }
+
+    //Specify pagination. We use pagination type from model.
+    switch(pagination->policy()) {
+    case Pagination::PageNumber:
+        query.addQueryItem("per-page", QString::number(pagination->perPage()));
+        query.addQueryItem("page", QString::number(pagination->currentPage()));
+        break;
+    case Pagination::None:
+    case Pagination::Infinity:
+    case Pagination::LimitOffset:
+    case Pagination::Cursor:
+    default:
+        break;
+    }
+
+    url.setQuery(query.query());
 
     QNetworkReply *reply = get(url);
 

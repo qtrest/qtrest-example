@@ -22,6 +22,8 @@ ApplicationWindow {
 
     title: qsTr("Skid.KZ")
 
+    property string searchSource: "qrc:/Search.qml"
+
     SkidKZApi {
         id: skidKZApi
 
@@ -34,22 +36,16 @@ ApplicationWindow {
     }
 
     JsonRestListModel {
-        id: jsonCouponsModel
+        id: categoriesRestModel
         api: skidKZApi
 
         idField: 'id'
 
         requests {
-            get: "/v1/coupon"
-            getDetails: "/v1/coupon/{id}"
+            get: "/v1/categories"
         }
 
-        filters: {'isArchive': '0'}
-        fields: ['id','title','sourceServiceId','imagesLinks','mainImageLink',
-                 'pageLink','cityId','boughtCount','shortDescription',
-                 'createTimestamp', 'serviceName', 'discountType', 'originalCouponPrice',
-                 'originalPrice', 'discountPercent', 'discountPrice']
-        sort: ['-id']
+        sort: ['categoryName']
 
         pagination {
             policy: Pagination.PageNumber
@@ -80,7 +76,8 @@ ApplicationWindow {
                 id: menuBtn
                 label: Image {
                     anchors.centerIn: parent
-                    source: stackView.depth > 1 ? awesome.iconLink( "chevronleft", {}, "mdpi" ) : awesome.iconLink( "bars", {}, "mdpi" )
+                    source: stackView.depth > 1 ? awesome.iconLink( "chevronleft", {}, "mdpi" )
+                                                : awesome.iconLink( "bars", {}, "mdpi" )
                 }
                 onClicked: {
                     if (stackView.depth > 1) {
@@ -104,6 +101,28 @@ ApplicationWindow {
             Item {
                 width: menuBtn.width
                 height: width
+
+                ToolButton {
+                    id: searchBtn
+                    visible: stackView.depth == 1
+                    label: Image {
+                        anchors.centerIn: parent
+                        source: awesome.iconLink( "search", {}, "mdpi" )
+                    }
+                    onClicked: {
+                        if (stackView.depth > 1) {
+                            stackView.pop()
+                        } else {
+                            stackView.push(searchSource, {categoriesModel: categoriesRestModel})
+                        }
+                    }
+                }
+
+                Item {
+                    visible: stackView.depth > 1
+                    width: menuBtn.width
+                    height: width
+                }
             }
         }
     }

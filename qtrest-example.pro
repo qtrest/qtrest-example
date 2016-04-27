@@ -38,21 +38,6 @@ include(3rd/QtAwesome/QtAwesome/QtAwesome.pri)
 
 #AdCtl: Google Analytics, AdMob, StartAD.mobi, Qt-REST
 include(vendor/vendor.pri)
-ANDROID_PACKAGE_SOURCE_DIR = $$PWD/mobile/android
-android {
-  OTHER_FILES += $$PWD/mobile/android/AndroidManifest.xml
-}
 
 DISTFILES += \
-    mobile/android/AndroidManifest.xml \
-    mobile/android/gradle/wrapper/gradle-wrapper.jar \
-    mobile/android/gradlew \
-    mobile/android/res/values/libs.xml \
-    mobile/android/build.gradle \
-    mobile/android/gradle/wrapper/gradle-wrapper.properties \
-    mobile/android/gradlew.bat \
-    qml/controls/Button.qml \
-    qml/controls/Loader.qml \
-    qml/controls/Text.qml \
-    qml/controls/Variables.qml \
     QtMicroRestFramework.qmodel

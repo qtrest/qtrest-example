@@ -7,6 +7,13 @@ CouponsList {
 
     property string titleText: qsTr("Archive")
 
+    function filter(filters)
+    {
+        filters.isArchive = 0;
+        coupons.filters = filters;
+        coupons.reload();
+    }
+
     couponsModel: CouponModel {
         id: coupons;
         api: skidKZApi

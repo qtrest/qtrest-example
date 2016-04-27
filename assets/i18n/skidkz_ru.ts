@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>About</name>
     <message>
@@ -20,7 +20,7 @@
 <context>
     <name>ArchiveCouponsList</name>
     <message>
-        <location filename="../../qml/ArchiveCouponsList.qml" line="7"/>
+        <location filename="../../qml/ArchiveCouponsList.qml" line="8"/>
         <source>Archive</source>
         <translation>Архив</translation>
     </message>
@@ -36,17 +36,17 @@
 <context>
     <name>CouponModel</name>
     <message>
-        <location filename="../../api/models/couponmodel.cpp" line="38"/>
+        <location filename="../../api/models/couponmodel.cpp" line="35"/>
         <source>Undefined Type</source>
         <translation>Скидка неизвестна</translation>
     </message>
     <message>
-        <location filename="../../api/models/couponmodel.cpp" line="40"/>
+        <location filename="../../api/models/couponmodel.cpp" line="37"/>
         <source>Coupon: %1. Discount: %2%</source>
         <translation>Купон: %1. Скидка: %2%</translation>
     </message>
     <message>
-        <location filename="../../api/models/couponmodel.cpp" line="42"/>
+        <location filename="../../api/models/couponmodel.cpp" line="39"/>
         <source>Cost: %1. Certificate: %2. Discount: %3%</source>
         <translation>Цена: %1. Сертификат: %2. Скидка: %3%</translation>
     </message>
@@ -116,6 +116,14 @@
     </message>
 </context>
 <context>
+    <name>Search</name>
+    <message>
+        <location filename="../../qml/Search.qml" line="10"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Statistics</name>
     <message>
         <location filename="../../qml/Statistics.qml" line="6"/>
@@ -126,27 +134,27 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../../qml/main.qml" line="18"/>
+        <location filename="../../qml/main.qml" line="23"/>
         <source>Skid.KZ</source>
         <translation>Skid.KZ</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="102"/>
+        <location filename="../../qml/main.qml" line="158"/>
         <source>Actual</source>
         <translation>Актуальные</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="103"/>
+        <location filename="../../qml/main.qml" line="159"/>
         <source>Archive</source>
         <translation>Архив</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="104"/>
+        <location filename="../../qml/main.qml" line="160"/>
         <source>Statistics</source>
         <translation>Статистика</translation>
     </message>
     <message>
-        <location filename="../../qml/main.qml" line="105"/>
+        <location filename="../../qml/main.qml" line="161"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
