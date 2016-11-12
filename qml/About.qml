@@ -1,7 +1,7 @@
 import QtQuick 2.6
 
 Rectangle {
-    anchors.fill: parent
+    //anchors.fill: parent
 
     property string titleText: qsTr("About")
 

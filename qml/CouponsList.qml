@@ -1,5 +1,5 @@
 import QtQuick 2.6
-import Qt.labs.controls 1.0
+import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import com.github.qtrestexample.coupons 1.0
 

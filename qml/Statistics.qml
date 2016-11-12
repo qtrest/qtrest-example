@@ -1,7 +1,7 @@
 import QtQuick 2.6
 
 Item {
-    anchors.fill: parent
+    //anchors.fill: parent
 
     property string titleText: qsTr("Statistics")
 

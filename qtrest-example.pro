@@ -37,7 +37,10 @@ include(deployment.pri)
 include(3rd/QtAwesome/QtAwesome/QtAwesome.pri)
 
 #AdCtl: Google Analytics, AdMob, StartAD.mobi, Qt-REST
-include(vendor/vendor.pri)
+include(3rd/qtrest/com_github_kafeg_qtrest.pri)
 
 DISTFILES += \
     QtMicroRestFramework.qmodel
+
+#INCLUDEPATH += $$PWD/vendor/com/github/kafeg/qtrest/src/ \
+#                $$PWD/vendor/com/github/kafeg/qtrest/src/models/

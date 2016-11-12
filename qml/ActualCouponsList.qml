@@ -5,7 +5,7 @@ import com.github.qtrestexample.coupons 1.0
 import "includes/Log.js" as Log
 
 CouponsList {
-    anchors.fill: parent
+    //anchors.fill: parent
 
     property string titleText: qsTr("Actual")
 

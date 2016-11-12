@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
     qputenv("QT_LABS_CONTROLS_STYLE", settings.value("style").toByteArray());
 
     QQmlApplicationEngine engine;
-    QPM_INIT(engine)
     engine.rootContext()->setContextProperty("awesome", awesome);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 

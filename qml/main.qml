@@ -2,9 +2,9 @@ import QtQuick 2.5
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.3
 
-import Qt.labs.controls 1.0
-import Qt.labs.controls.material 1.0
-import Qt.labs.controls.universal 1.0
+import QtQuick.Controls 2.0
+import QtQuick.Controls.Universal 2.0
+import QtQuick.Controls.Material 2.0
 import Qt.labs.settings 1.0
 
 import com.github.qtrestexample.skidkzapi 1.0
@@ -74,7 +74,7 @@ ApplicationWindow {
 
             ToolButton {
                 id: menuBtn
-                label: Image {
+                indicator: Image {
                     anchors.centerIn: parent
                     source: stackView.depth > 1 ? awesome.iconLink( "chevronleft", {}, "mdpi" )
                                                 : awesome.iconLink( "bars", {}, "mdpi" )
@@ -105,7 +105,7 @@ ApplicationWindow {
                 ToolButton {
                     id: searchBtn
                     visible: stackView.depth == 1
-                    label: Image {
+                    indicator: Image {
                         anchors.centerIn: parent
                         source: awesome.iconLink( "search", {}, "mdpi" )
                     }
@@ -139,10 +139,17 @@ ApplicationWindow {
     Drawer {
         id: drawer
 
+        width: 0.66 * root.width
+        height: root.height
+
         Pane {
             padding: 0
-            width: Math.min(root.width, root.height) * 0.8
-            height: root.height
+            anchors.fill: parent
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: drawer.close()
+            }
 
             ListView {
                 id: listView
@@ -153,6 +160,7 @@ ApplicationWindow {
                     width: parent.width
                     text: model.title
                     highlighted: ListView.isCurrentItem
+                    anchors.horizontalCenter: parent.horizontalCenter
                     onClicked: {
                         if (listView.currentIndex != index) {
                             listView.currentIndex = index
@@ -172,7 +180,7 @@ ApplicationWindow {
                 ScrollIndicator.vertical: ScrollIndicator { }
             }
         }
-        onClicked: close()
+        //Component.onCompleted: drawer.close()
     }
 
     StackView {
@@ -180,7 +188,7 @@ ApplicationWindow {
         anchors.fill: parent
 
         initialItem: ActualCouponsList {
-            anchors.fill: parent
+            //anchors.fill: parent
         }
 
         pushEnter: Transition {
@@ -206,6 +214,10 @@ ApplicationWindow {
         replaceExit: Transition {
             XAnimator { from: 0; to: -root.width; duration: 200; easing.type: Easing.OutCubic }
         }
+
+//        transform: Translate {
+//            x: drawer.position * stackView.width * 0.33
+//        }
     }
 
     onClosing: {

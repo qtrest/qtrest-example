@@ -2,3 +2,6 @@
 	path = 3rd/QtAwesome
 	url = https://github.com/kafeg/QtAwesome.git
 
+[submodule "3rd/qtrest"]
+	path = 3rd/qtrest
+	url = https://github.com/kafeg/qtrest.git

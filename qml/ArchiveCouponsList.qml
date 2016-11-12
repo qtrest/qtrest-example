@@ -3,7 +3,7 @@ import com.github.qtrest.pagination 1.0
 import com.github.qtrestexample.coupons 1.0
 
 CouponsList {
-    anchors.fill: parent
+    //anchors.fill: parent
 
     property string titleText: qsTr("Archive")
 
