@@ -1,6 +1,8 @@
 # qtrest-example
 Full functionality example application for Qt REST library (https://github.com/kafeg/qtrest)
 
+This sample APP uses the next Backend sample as reference: https://github.com/qtrest/qtrest-example-backend/
+
 In this example application you will found example C++ and QML code for working with API methods of http://skid.kz site.
 
 I will use it's REST API, who folows HATEOAS (https://github.com/yiisoft/yii2/blob/master/docs/guide/rest-quick-start.md):
